@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://static.xmost.top/hexo-favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://static.xmost.top/hexo-favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://static.xmost.top/hexo-favicon.ico">
+  <link rel="mask-icon" href="https://static.xmost.top/hexo-favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.liaol.net","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":null,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="原文地址:http://culttt.com/2014/04/07/working-configuration-laravel-4/第一次翻译，难免粗糙，欢迎指正！ 配置设置是在各种web应用中我们不得不处理的事。主流得web应用至少要配置数据库,但是通常要配置大量得第三方服务我觉得如果你研究过不同得框架，你会发现不同web应用用各自不同的方法管理配置信息。我接触的开发者也经常用他们自己的方法管理">
+<meta name="keywords" content="laravel">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(译)在laravel 4 中使用配置">
+<meta property="og:url" content="http://blog.liaol.net/2014/10/laravel-config/index.html">
+<meta property="og:site_name" content="liaol的博客">
+<meta property="og:description" content="原文地址:http://culttt.com/2014/04/07/working-configuration-laravel-4/第一次翻译，难免粗糙，欢迎指正！ 配置设置是在各种web应用中我们不得不处理的事。主流得web应用至少要配置数据库,但是通常要配置大量得第三方服务我觉得如果你研究过不同得框架，你会发现不同web应用用各自不同的方法管理配置信息。我接触的开发者也经常用他们自己的方法管理">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2021-01-31T09:28:15.970Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="(译)在laravel 4 中使用配置">
+<meta name="twitter:description" content="原文地址:http://culttt.com/2014/04/07/working-configuration-laravel-4/第一次翻译，难免粗糙，欢迎指正！ 配置设置是在各种web应用中我们不得不处理的事。主流得web应用至少要配置数据库,但是通常要配置大量得第三方服务我觉得如果你研究过不同得框架，你会发现不同web应用用各自不同的方法管理配置信息。我接触的开发者也经常用他们自己的方法管理">
+
+<link rel="canonical" href="http://blog.liaol.net/2014/10/laravel-config/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>(译)在laravel 4 中使用配置 | liaol的博客</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-50048508-2"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-50048508-2');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">liaol的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/liaol" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://blog.liaol.net/2014/10/laravel-config/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://static.xmost.top/hexo-favicon.ico">
+      <meta itemprop="name" content="liaol">
+      <meta itemprop="description" content="记录关于编程，投资股票，生活的一些经验。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="liaol的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (译)在laravel 4 中使用配置
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Oct 11 2014 1:07:35" itemprop="dateCreated datePublished" datetime="2014-10-11T01:07:35+00:00">Oct 11 2014</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/code/" itemprop="url" rel="index"><span itemprop="name">code</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2014/10/laravel-config/" class="post-meta-item leancloud_visitors" data-flag-title="(译)在laravel 4 中使用配置" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2014/10/laravel-config/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2014/10/laravel-config/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <!-- 1 -->
+        <ins class="adsbygoogle"
+        style="display:block"
+        data-ad-client="ca-pub-2453465456861242"
+        data-ad-slot="6337062503"
+        data-ad-format="auto"
+        data-full-width-responsive="true"></ins>
+        <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    
+
+
+      
+        <p>原文地址:<a href="http://culttt.com/2014/04/07/working-configuration-laravel-4/" target="_blank" rel="noopener">http://culttt.com/2014/04/07/working-configuration-laravel-4/</a><br><strong>第一次翻译，难免粗糙，欢迎指正！</strong></p>
+<p>配置设置是在各种web应用中我们不得不处理的事。主流得web应用至少要配置数据库,但是通常要配置大量得第三方服务<br>我觉得如果你研究过不同得框架，你会发现不同web应用用各自不同的方法管理配置信息。我接触的开发者也经常用他们自己的方法管理配置。<br>在这周得教程中，我将介绍怎样在Laravel项目中处理配置信息。我以前得一些教程也介绍过如果使用配置，但我觉得这是个大家都需要的问题，所以值得再写篇文章。<br><a id="more"></a></p>
+<h2 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h2><p>除非你刚接触Laravel，不然你一定已经知道Laravel默认的配置文件在哪。<code>app/config</code>文件夹下有不同单个的配置文件。   </p>
+<p>如果你打开其中一个文件，你会发现它仅仅是个简单的数组。这个简单的步骤使得我们创建自己的配置文件变得简单，因为这不难学。   </p>
+<p>由于配置文件都是分拆成单个的文件，组织你自己的配置文件也很简单。</p>
+<p>你要注意到有个<code>testing</code>文件夹。你可以创建一个特定的环境文件以覆盖缺省配置。这个在你想在测试时使用内存数据库或者为本地环境配置一些特殊的配置</p>
+<p>阅读一下配置文件看一下你自己的选项。你可能不想更改缺省配置，但是如果你想改它的话很有好处。</p>
+<h2 id="配置你的环境"><a href="#配置你的环境" class="headerlink" title="配置你的环境"></a>配置你的环境</h2><p>当你第一次开发应用时很容易忽略配置环境。如果你跳过了这一步而直接编码，你可能不会仔细考虑配置两个不同的环境。</p>
+<p>然而一旦你将要叫代码上传到生产服务器时，你需要正确为配置环境。</p>
+<p>Laravel应用中得环境配置在<code>boostrap/start.php</code>。在这个文件中你叫看到下面的代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$env = $app-&gt;detectEnvironment(array(</span><br><span class="line"> </span><br><span class="line">  &apos;local&apos; =&gt; array(&apos;your-machine-name&apos;),</span><br><span class="line"> </span><br><span class="line">));</span><br></pre></td></tr></table></figure></p>
+<p>默认情况下，Laravel应用运行在生产环境中。<br>你可以想下面这样定义其他环境：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$env = $app-&gt;detectEnvironment(array(</span><br><span class="line">  &apos;local&apos; =&gt; array(&apos;philips-mbp.home&apos;),</span><br><span class="line">  &apos;staging&apos; =&gt; array(&apos;staging-server&apos;),</span><br><span class="line">  &apos;production&apos; =&gt; array(&apos;production-server&apos;)</span><br><span class="line">));</span><br></pre></td></tr></table></figure></p>
+<p><code>philips-mbp.home</code>表示计算机的hostname。运行hostname命令可得到该计算机的hostname</p>
+<p>以前，你可以在Laravel中通过URL参数来设置环境。这不再是个方便得方法，但是你还能通过使用<code>detectEnvironment</code>这个闭包函数来实现这一功能。</p>
+<p>我个人更喜欢通过hostname来设置环境。</p>
+<h2 id="使用Config-facade-（至今不知道facade什么意思）"><a href="#使用Config-facade-（至今不知道facade什么意思）" class="headerlink" title="使用Config facade   （至今不知道facade什么意思）"></a>使用Config facade   <code>（至今不知道facade什么意思）</code></h2><p>现在你已经正确配置了，你可以开始在代码中使用这些功能。这使得在配置文件中构建任何个性设置变得容易。而在配置文件中构建任何个性设置可以使配置设置不污染你的代码。</p>
+<p>举个例子 假设你已经设置了一个缓存过期时间，你可以像下面那样获取配置：<br><code>$minutes = Config::get(&#39;cache.expiry&#39;);</code><br>在上面得例子中，cache使文件名，expiry是键名。现在你可以简单使.隔开来选择这个数组中的一个值</p>
+<p>你可以在get传个参数来设置时间：<br><code>$minutes = Config::get(&#39;cache.expiry&#39;, 10);</code>   </p>
+<p>你可以使用set方法，但这只在这次请求中有效:<br><code>Config::set(&#39;cache.expiry&#39;, 10);</code></p>
+<h2 id="在service-providers中使用配置"><a href="#在service-providers中使用配置" class="headerlink" title="在service providers中使用配置"></a>在service providers中使用配置</h2><p>我觉得在service providers中是需要使用配置最普遍的场景之一。service providers使一种引导代码和准备服务的方法。</p>
+<p>例如，我想列出缓存的生成时间，我可以这样写repository:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * Register User Repository</span><br><span class="line"> */</span><br><span class="line">public function registerUserRepository()</span><br><span class="line">&#123;</span><br><span class="line">  $this-&gt;app-&gt;bind(&apos;Cribbb\Repositories\User\UserRepository&apos;, function($app)</span><br><span class="line">  &#123;</span><br><span class="line">    $user = new EloquentUserRepository( new User, $app[&apos;hash&apos;] );</span><br><span class="line"> </span><br><span class="line">    $minutes = $app[&apos;config&apos;]-&gt;get(&apos;cache.expires&apos;);</span><br><span class="line"> </span><br><span class="line">    return new CacheDecorator( $user, new LaravelCache( $app[&apos;cache&apos;], &apos;user&apos;, $minutes) );</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在你的 service providers中你可以通过$this-&gt;app使用config实例。这跟使用facade是一样的，你可以使用相同的方法来获取和设置配置。</p>
+<h2 id="使用-文件"><a href="#使用-文件" class="headerlink" title="使用.文件"></a>使用.文件</h2><p>Laravel默认的配置文件结构是解决多配置问题的一种很赞的方法。这也使得配置自己的设置并且使用它们变得简单。</p>
+<p>然而当涉及到敏感的设置（比如数据库密码）时，使用这种方法使不明智的。</p>
+<p>例如，你可能不想在git中提交你的数据库信息，你只想在生产环境中使用特定的敏感信息。</p>
+<p>当和很多伙伴同时开发时，这是个很头疼的事情，每个人都有自己的本地数据库，使用不同的用户名和密码。不用git管理本地配置文件也不一定是一种有效的方法。</p>
+<p>哈哈，Laravel提供了一种优雅的解决方法———使用.文件</p>
+<p>一个.文件在羡慕文件夹的根目录，包含任何敏感的或者环境相关的配置详情，这些都不应该提交到项目中。</p>
+<p>你可以为每个环境创建一个.文件,配置信息包含在里面</p>
+<p>例如，在本地工程目录下创建一个<code>.env.local.php</code>的文件。你还要在.gitignore中忽略它以免提交上去。</p>
+<p>在 <code>.env.local.php</code> 中创建一个包含本地敏感配置信息的数组：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">return array(</span><br><span class="line">  &apos;DATABASE_NAME&apos; =&gt; &apos;my_database&apos;,</span><br><span class="line">  &apos;DATABASE_USER&apos; =&gt; &apos;username&apos;,</span><br><span class="line">  &apos;DATABASE_PASSWORD&apos; =&gt; &apos;totally_secure_password&apos;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<p>现在，在<code>database.php</code>配置文件中你可以用环境变量来替换写死的信息。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&apos;database&apos;  =&gt; $_ENV[&apos;DATABASE_NAME&apos;],</span><br><span class="line">&apos;username&apos;  =&gt; $_ENV[&apos;DATABASE_USER&apos;],</span><br><span class="line">&apos;password&apos;  =&gt; $_ENV[&apos;DATABASE_PASSWORD&apos;]</span><br></pre></td></tr></table></figure>
+<p>在每一个不同的环境（或者一个新伙伴准备在本地搭环境），你都可以创建一个.文件来保存本地的配置信息。这个可以保证本地敏感信息得安全，再也不用为版本控制担心。</p>
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>配置管理看上去有很多不同的途径。在生产环境中配置错了数据库或者第三方服务得api key都是我们不愿意看到的。所以要尽早搞定配置。</p>
+<p>Laravel使配置环境易如反掌。我热衷于使用hostname配置环境。当环境不是很明确时，处理不同的环境是很棘手的。</p>
+<p>你最终需要的配置信息多得吃惊。几乎所有的网络应用需要个数据库，大多数还需要很多第三方服务去完成的任务如发邮件，解决bug.在版本控制系统外备份所有的敏感配置信息，然后存储在服务器上，并且依赖他们。这是解决非常不需要的问题的优秀方法。（看不懂）原句是：</p>
+<blockquote>
+<p>Keeping a copy of all of these sensitive configuration details outside of your version control and stored locally on the server that requires them is an excellent solution to a very unnecessary problem.</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/laravel/" rel="tag"># laravel</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/09/move-to-hexo/" rel="prev" title="将博客从Wordpress迁移到Hexo">
+      <i class="fa fa-chevron-left"></i> 将博客从Wordpress迁移到Hexo
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/01/2014-summary/" rel="next" title="2014总结">
+      2014总结 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置文件"><span class="nav-number">1.</span> <span class="nav-text">配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置你的环境"><span class="nav-number">2.</span> <span class="nav-text">配置你的环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用Config-facade-（至今不知道facade什么意思）"><span class="nav-number">3.</span> <span class="nav-text">使用Config facade   （至今不知道facade什么意思）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在service-providers中使用配置"><span class="nav-number">4.</span> <span class="nav-text">在service providers中使用配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-文件"><span class="nav-number">5.</span> <span class="nav-text">使用.文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结论"><span class="nav-number">6.</span> <span class="nav-text">结论</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="liaol"
+      src="https://static.xmost.top/hexo-favicon.ico">
+  <p class="site-author-name" itemprop="name">liaol</p>
+  <div class="site-description" itemprop="description">记录关于编程，投资股票，生活的一些经验。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/liaol/" title="Github → https://github.com/liaol/" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>Github</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">liaol</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"iM6HWVxiDgjSFJzVLqkb4GKI-gzGzoHsz","app_key":"h8fR0FmSVs2r8wfltV383UQp","server_url":null,"security":false};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.1.0/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/muse.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://blog-liaol-net.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://blog.liaol.net/2014/10/laravel-config/";
+    this.page.identifier = "2014/10/laravel-config/";
+    this.page.title = "(译)在laravel 4 中使用配置";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://blog-liaol-net.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>
