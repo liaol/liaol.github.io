@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>code on 达则兼济天下</title><link>https://www.liaol.net/categories/code/</link><description>Recent content in code on 达则兼济天下</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sat, 15 Jul 2023 16:30:21 +0800</lastBuildDate><atom:link href="https://www.liaol.net/categories/code/index.xml" rel="self" type="application/rss+xml"/><item><title>Set GOOS for gopls in Vim/Neovim</title><link>https://www.liaol.net/posts/set-goos-for-gopls-in-neovim/</link><pubDate>Sat, 15 Jul 2023 16:30:21 +0800</pubDate><guid>https://www.liaol.net/posts/set-goos-for-gopls-in-neovim/</guid><description>
+I use Neovim to develop my Go project on macOS, but my project only run on Linux Machines, so I need to use to some Linux specific packages like https://pkg.go.dev/golang.org/x/sys@v0.10.0/unix.
+Here the issue is: I can&amp;rsquo;t jump to the definition of xxx_linux.go files, because the GOOS environment variable is set to &amp;ldquo;darwin&amp;rdquo; on macOS.
+vim.g.GOOS = &amp;quot;linux&amp;quot; can set the GOOS in neovim, but it not works for me, since the GoTest function of vim-go will not function properly.</description></item><item><title>记一次忘记 close rows 引发的惨案</title><link>https://www.liaol.net/posts/forget-to-close-rows/</link><pubDate>Sun, 28 Aug 2022 17:07:29 +0800</pubDate><guid>https://www.liaol.net/posts/forget-to-close-rows/</guid><description>
+&lt;p>这周帮业务团队排查一个Go 服务问题，这里记录下。&lt;/p></description></item><item><title>how-to-calculate-the-cpu-usage-in-linux</title><link>https://www.liaol.net/posts/how-to-calculate-the-cpu-usage-in-linux/</link><pubDate>Mon, 30 May 2022 22:59:36 +0800</pubDate><guid>https://www.liaol.net/posts/how-to-calculate-the-cpu-usage-in-linux/</guid><description>
+&lt;p>As we know, one can use top or other tools to get cpu usage。 Below is the output of top&lt;/p>
+&lt;p>&lt;img src="https://www.liaol.net/img/top.jpeg" alt="">&lt;/p>
+&lt;p>Now I will explain how to calculate the CPU usage in Linux.&lt;/p></description></item><item><title>记一次WordPress 被黑</title><link>https://www.liaol.net/posts/wordpress-attacked/</link><pubDate>Sun, 15 Nov 2020 01:08:59 +0800</pubDate><guid>https://www.liaol.net/posts/wordpress-attacked/</guid><description>
+&lt;p>之前搭的一个WordPress 站点，没想到最近被黑了。情况跟这个&lt;a href="https://wordpress.stackexchange.com/questions/377752/how-to-mass-delete-one-line-from-all-posts-after-site-hack">问题&lt;/a>类似，网站强制跳转到 &lt;a href="https://crow.lowerthenskyactive.ga">https://crow.lowerthenskyactive.ga&lt;/a>&lt;/p>
+&lt;p>幸亏之前有备份代码和数据库，保留现场后迅速从git 恢复代码，导入数据库备份。&lt;/p>
+&lt;p>也算是一次有趣的经历，这里记录下经验。&lt;/p></description></item><item><title>为了抢口罩，我搞了个验证码识别</title><link>https://www.liaol.net/posts/captcha-breaking/</link><pubDate>Sun, 16 Feb 2020 23:21:41 +0800</pubDate><guid>https://www.liaol.net/posts/captcha-breaking/</guid><description>
+最近疫情严重，口罩成了硬通货，有钱也不一定能买到。本地政府上线了预约购买口罩，需要准时抢。 第一反应就是写个脚本自动抢。抓包看了下接口很简单，只是验证码比较头疼。 验证码长这样：
+首先去github搜索下验证码识别的项目，主要有两种：1.opencv降噪后用tesseract识别；2.用TensorFlow,PyTorch之类的机器学习框架训练模型。 这里有个合集：https://github.com/ZYSzys/awesome-captcha
+先说第一种： 可以看这篇文章，https://www.cnblogs.com/qqandfqr/p/7866650.html 这里的问题是干扰线比较粗，去不干净。最后识别率很低，没法用。
+再看第二种： 思路很简单：拿到大量(万级别)验证码图片并标注，训练之，生成个模型。 问题是怎么拿到大量标注好的验证码图片呢？可以花钱找打码平台识别，但是现在很多打码平台都被封了。 自己生成呢？得跟要识别的验证码图片样式一样才行。 机智如我，看预约口罩的接口是java写的（url里有servlet），做这种政府项目的技术都很一般，生成验证码的代码估计也是复制来的。Google 搜索下&amp;quot;java 验证码&amp;quot;，果然找到一篇教程，里面的验证码样式跟上面一样。 简直天助我也，果断复制代码生成一万个验证码图片，自带标注，美滋滋。 训练完后准确率高达90%。
+最后顺利抢到了口罩。</description></item><item><title>使用TensorFlow快速实现自己的图片分类器</title><link>https://www.liaol.net/posts/tensorflow-image-classifier/</link><pubDate>Sat, 23 Mar 2019 23:46:03 +0800</pubDate><guid>https://www.liaol.net/posts/tensorflow-image-classifier/</guid><description>
+这篇教程是利用现成的TensorFlow轮子快速实现一个图片分类器。 先说下背景：最新在做一个有趣的网站：meizigif.com 主要是抓取微博上好看的小姐姐图片贴到网站上。但是我又懒得一张张筛选，因为小姐姐们有时会发抠脚大汉的图。这时就需要一个”鉴黄“服务：检查图片是否sexy。 最开始用的是这个open_nsfw , 效果不好。 还是得用自己的图片集训练。 具体做法如下： GitHub上找到一个现成的轮子sourcedexter/tfClassifier。 照着这个教程操作即可。 有几个注意点：
+至少要有两个分类， 我这个case是用sexy和not sexy 两类 这种错误是因为图片有问题，直接删掉即可。文件名就在错误提示前一行 Fail to slurp xxx file, reason: Failed to read from given file 这个错误是因为TensorFlow 版本不同， 把retrain.py中的SummaryWriter改成tf.summary.FileWriter即可 AttributeError: module &amp;#39;tensorflow.python.training.training&amp;#39; has no attribute &amp;#39;SummaryWriter&amp;#39; 验证效果 python3 retrain_model_classifier.py xxx.jpg 这时如果提示找不到output.pb，是因为教程中的命令生成的是output文件， 需要重命名成output.pb。默认的labels.txt在/tmp/下面， 需要mv过来。
+以上 简单用没啥技术含量，但迅速解决了我的需求。</description></item><item><title>树莓派ssh中文乱码的解决办法</title><link>https://www.liaol.net/posts/respberry-ssh-chinese/</link><pubDate>Sun, 16 Dec 2018 00:54:36 +0800</pubDate><guid>https://www.liaol.net/posts/respberry-ssh-chinese/</guid><description>
+mac ssh登录树莓派， 中文显示乱码。解决办法如下：
+运行raspi-config，出现的设置界面里进入Internationalisation Options，按空格选择zh_CN.UTF-8，zh_CN开头的都可以选上。 vim /etc/profile， 加上export LANG=zh_CN.UTF-8 source /etc/profile 这时应该可以显示中文了。</description></item><item><title>fibos兑换教程</title><link>https://www.liaol.net/posts/how-to-buy-fibos-fo/</link><pubDate>Sat, 01 Sep 2018 11:13:26 +0800</pubDate><guid>https://www.liaol.net/posts/how-to-buy-fibos-fo/</guid><description>
+最近fibos很火， 作为一名韭菜当然不容错过。 下面是从零开始兑换fo教程。 注：兑换FO的话注册EOS账户不是必须的，后面提现可能需要EOS账户，应该也可以直接提到交易所，我还没试。
+兑换FO # 注册fibos账户。开始根据官网教程生成公私钥后， curl注册账户一直失败， 然后只能一小时请求一次（提示The interval is less than one hour）。只好作罢。后来发现https://more.top/ 钱包有这个功能。该钱包内有生成fibos账户的功能。生成账户后保存好公钥，私钥，账户名 到交易所提现EOS到fibos指定账户。memo写上一步中注册到的fibos账户名。第一次可以只提一个eos，避免出问题损失大。提现到账后就可以查询fibos账户了。https://explorer.fibos.rocks/ 可以搜索到账户余额。这是账户中只有EOS。需要下一步兑换。 将账户中EOS兑换成FO。这一步我没用more.top钱包兑换，不知道有没有这个功能。 我是直接用https://github.com/adshao/fibos-scripts 中的脚本。 var res = client.exchangeEOS(&amp;#34;1.0000 FO&amp;#34;); console.log(res); 兑换完后https://explorer.fibos.rocks/ 即可查询到。 注册eos账户 # 注册eos账户需要eos， 也就是需要💰。 我是在https://eos-account-creator.com/ 创建的。
+输出你要注册的账户名 输出公钥。（左边有生成公钥私钥的工具，一定要保存好私钥和公钥） 支付。有三种支付方式：a.虚拟货币（btc,eth等）b.信用卡 c.EOS 我尝试从otcbtc提现到eos-account-creator.com指定的eos账户， 提示说不能提现到合约地址。 只好使用eth转账。 保存好你的私钥，公钥， 账户名 参考 # fibos脚本 https://github.com/adshao/fibos-scripts 查询eos交易 https://explorer.eosvibes.io/ 查询fibos交易 https://explorer.fibos.rocks/</description></item><item><title>近期面试经历总结。</title><link>https://www.liaol.net/posts/2018-interview-summary/</link><pubDate>Mon, 20 Aug 2018 00:25:43 +0800</pubDate><guid>https://www.liaol.net/posts/2018-interview-summary/</guid><description>
+&lt;p>经过一波密集面试， 终于拿到心仪的offer， 于这周入职。
+终于下定决心离开厦门，来到了帝都。其实自己都说不清为啥， 就是凭着一腔热血，趁着年轻多见见世面。
+这次远程+现场面试应该有10家，大小公司都有， 感觉除了头条都能拿到offer， 就是钱的区别。
+除了头条面试变态， 其他公司套路差不多，包括滴滴，百度，链家，陌陌等。一些常用技术+简单数据结构/算法。我猜主要看上家公司背景吧，非小公司出来的技术不太差一般都会要。 我刚好属于不会吹的那种， 更好的做法是提前准备好说辞， 包括工作中遇到的哪些挑战， 自己做了哪些牛逼的事。哎，在我看来平时的工作也没啥挑战， 都能轻松完成。 其实仔细想想， 还是平时总结的不够， 时间长了就忘了。换位思考下， 如果说不出遇到的挑战， 面试官可能以为你做的事情比较边缘或简单，甚至怀疑你的技术。 总之就是平时做好总结， 面试时大胆的吹出来。
+这里列出一些知识点，如果掌握了这些基本上除头条外的国内互联网公司都能搞定了。 头条的话感觉需要补充各种计算机基础知识（如操作系统， 网络等）和刷一遍leecode。另外剑指offer一定要过一遍！&lt;/p></description></item><item><title>PHP,Java,Go 通用的AES加解密方法</title><link>https://www.liaol.net/posts/aes-by-php-java-golang/</link><pubDate>Fri, 29 Sep 2017 00:51:13 +0800</pubDate><guid>https://www.liaol.net/posts/aes-by-php-java-golang/</guid><description>
+&lt;p>核心思路就是加密时先随机生成16位向量iv,再将iv和密文拼接后base64encode后输出
+解密时前16位是向量iv，剩下是密文。&lt;/p></description></item><item><title>PHP FTP 'vsf_sysutil_recv_peek no data' 错误的解决办法</title><link>https://www.liaol.net/posts/php-ftp-500-oops-vsf-sysutil-recv-peek-no-data/</link><pubDate>Tue, 25 Jul 2017 23:49:52 +0800</pubDate><guid>https://www.liaol.net/posts/php-ftp-500-oops-vsf-sysutil-recv-peek-no-data/</guid><description>
+&lt;p>代码如下：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-php" data-lang="php">&lt;span style="display:flex;">&lt;span>$ftp &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ftp_connect&lt;/span>($config[&lt;span style="color:#e6db74">&amp;#39;host&amp;#39;&lt;/span>], $config[&lt;span style="color:#e6db74">&amp;#39;port&amp;#39;&lt;/span>], &lt;span style="color:#ae81ff">10&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">ftp_login&lt;/span>($ftp, $config[&lt;span style="color:#e6db74">&amp;#39;user&amp;#39;&lt;/span>], $config[&lt;span style="color:#e6db74">&amp;#39;password&amp;#39;&lt;/span>]);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">ftp_pasv&lt;/span>($ftp, &lt;span style="color:#66d9ef">true&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$dist &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#39;test.txt&amp;#39;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$src &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#39;/tmp/test.txt&amp;#39;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$result &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ftp_put&lt;/span>($ftp, $dist, $src, &lt;span style="color:#a6e22e">FTP_BINARY&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">var_dump&lt;/span>($result);
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>始终上传不上去，$result为false。但是用FileZilla却能正常上传。
+用tcpdump抓包看返回：500 OOPS: vsf_sysutil_recv_peek: no data
+如图：
+&lt;img src="https://ws4.sinaimg.cn/large/006tNc79gy1fhwkh0qc6gj311y0jptcf.jpg" alt="">&lt;/p>
+&lt;p>这是因为被动模式下，FTP SERVER返回了个私有地址（172那个），然后FTP CLIENT无法识别。&lt;/p>
+&lt;p>解决办法有两个：&lt;/p>
+&lt;ol>
+&lt;li>在ftp_pasv前面加上ftp_set_option($ftp, FTP_USEPASVADDRESS, false);
+但是5.6.10版本不支持，需要升级到5.6.30+（没仔细看哪个版本提交的bugfix）&lt;/li>
+&lt;/ol>
+&lt;p>2.如果FTP server是vsftpd, 可在server端设置
+&lt;code>pasv_addr_resolve=YES 被动模式是否用设置好的的地址返回给客户端，如果是NO，则从链接的套接字中自己获取地址，如果为YES，则设置为下面这个地址 pasv_address=202.101.104.126 被动模式下返回的地址,安全需要，隐掉后面两个地址段&lt;/code>&lt;/p>
+&lt;p>参考链接：&lt;/p>
+&lt;ol>
+&lt;li>&lt;a href="https://winscp.net/eng/docs/ftp_modes">https://winscp.net/eng/docs/ftp_modes&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://stackoverflow.com/questions/38982901/php-ftp-passive-ftp-server-behind-nat">https://stackoverflow.com/questions/38982901/php-ftp-passive-ftp-server-behind-nat&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://github.com/php/php-src/pull/1668">https://github.com/php/php-src/pull/1668&lt;/a>&lt;/li>
+&lt;/ol></description></item><item><title>踩了一个mysql隐式转换的坑</title><link>https://www.liaol.net/posts/mysql-implicit-type-conversion/</link><pubDate>Sun, 09 Apr 2017 23:51:54 +0800</pubDate><guid>https://www.liaol.net/posts/mysql-implicit-type-conversion/</guid><description>
+前几天线上发生了一个故障，大批用户反馈自己的数据异常。收到反馈后发现是用户缓存中的一个字段A混入了脏数据。 背景：用户信息是从mysql取，然后存到缓存中。后来加了一个业务：从redis取出另一个数据A，一起存入用户缓存中， 临时将数据异常的缓存清空，然后开始找原因。开始一直以为是redis波动导致取数据A失败，导致A出现脏数据。但是日志中又没有找到当时的redis报错信息。 最后实在没办法，就在设置缓存的方法里记个debug日志，如果待存入缓存的数据中A字段异常，就把调用栈记下来。果然就找到原因了。 根据uid获取用户信息时，如果uid传了是123a，缓存中自然没有123a这个key，穿透到mysql，而mysql由于隐式转换会搜索出id=123的记录，然后redis也没有123a这个key，所以A为空，最后id=123的用户信息和空的A一起存入了id=123用户缓存中。真是坑爹。解决办法就是在获取用户信息的方法前加个强制类型缓存（intval），将123a转换为123。
+参考资料：https://yq.aliyun.com/articles/39477</description></item><item><title>从SAE迁移到DaoCloud</title><link>https://www.liaol.net/posts/migrate-from-sae-to-daocloud/</link><pubDate>Mon, 02 May 2016 20:40:04 +0800</pubDate><guid>https://www.liaol.net/posts/migrate-from-sae-to-daocloud/</guid><description>
+&lt;p>&lt;img src="http://blog.daocloud.io/wp-content/uploads/2016/03/DaoCloud-logo_square-250x250.gif" alt="">&lt;/p>
+&lt;p>原以为SAE一万的豆子可以用很久，结果最近变相收费，云豆耗光，只好撤离。 &lt;br>
+话说最近两年国内新出了好多开发者服务提供商:Coding,DaoCloud,LeanCloud等，造福广大开发者，真是大赞。所以这次就选择了DaoCloud（每个月有免费额度），顺便实践把Daocker。&lt;/p></description></item><item><title>beego项目部署脚本</title><link>https://www.liaol.net/posts/beego-deploy-script/</link><pubDate>Wed, 20 Jan 2016 23:10:34 +0800</pubDate><guid>https://www.liaol.net/posts/beego-deploy-script/</guid><description>
+&lt;p>　　准备上线用&lt;a href="http:beego.me">beego&lt;/a>写的一个小项目，在&lt;a href="https://www.vultr.com/freetrial">vultr&lt;/a>开了个日本节点，注册送50刀，免费用两个月，哈哈。&lt;br>
+　　之前还真没部署过编译型语言项目（Java白学了），也没去折腾&lt;a href="http://capistranorb.com/">capistrano&lt;/a>了。参考beego的文档撸了个简单脚本，先凑合用吧。&lt;br>
+　　&lt;/p></description></item><item><title>(译)在laravel 4 中使用配置</title><link>https://www.liaol.net/posts/laravel-config/</link><pubDate>Sat, 11 Oct 2014 01:07:35 +0800</pubDate><guid>https://www.liaol.net/posts/laravel-config/</guid><description>
+&lt;p>原文地址:&lt;a href="http://culttt.com/2014/04/07/working-configuration-laravel-4/">http://culttt.com/2014/04/07/working-configuration-laravel-4/&lt;/a>
+&lt;strong>第一次翻译，难免粗糙，欢迎指正！&lt;/strong>&lt;/p>
+&lt;p>配置设置是在各种web应用中我们不得不处理的事。主流得web应用至少要配置数据库,但是通常要配置大量得第三方服务&lt;br>
+我觉得如果你研究过不同得框架，你会发现不同web应用用各自不同的方法管理配置信息。我接触的开发者也经常用他们自己的方法管理配置。&lt;br>
+在这周得教程中，我将介绍怎样在Laravel项目中处理配置信息。我以前得一些教程也介绍过如果使用配置，但我觉得这是个大家都需要的问题，所以值得再写篇文章。&lt;/p></description></item><item><title>jQuery 异步加载图片</title><link>https://www.liaol.net/posts/lazyload-jquery/</link><pubDate>Wed, 02 Jul 2014 05:45:37 +0800</pubDate><guid>https://www.liaol.net/posts/lazyload-jquery/</guid><description>
+如果页面中图过多，加载会很慢，用户体验不好。这时就需要异步加载图片。 原理很简单，先将url存在img标签的data-src中，这时页面就不会加载图片，速度自然会变快。页面加载完后，利用jQuery将data-src中的url加到src中即可。当然也可以设置相应的事件 利用lazy-load这个插件可以更简单的实现!
+Have Fun!</description></item><item><title>mondrian教程</title><link>https://www.liaol.net/posts/mondrian-tutor/</link><pubDate>Fri, 23 May 2014 14:04:27 +0800</pubDate><guid>https://www.liaol.net/posts/mondrian-tutor/</guid><description>
+&lt;p>终于做完mondrian的小项目，先将遇到了一些问题和经验记下来。&lt;/p>
+&lt;h2 id="1-支持中文">
+1. 支持中文
+&lt;a href="#1-%e6%94%af%e6%8c%81%e4%b8%ad%e6%96%87" class="h-anchor" aria-hidden="true">#&lt;/a>
+&lt;/h2>
+&lt;p>在web.xml中添加过滤如下：&lt;/p></description></item><item><title>使用log4j在Mondrian中输出日志</title><link>https://www.liaol.net/posts/log4j-in-mondrian/</link><pubDate>Mon, 12 May 2014 17:00:58 +0800</pubDate><guid>https://www.liaol.net/posts/log4j-in-mondrian/</guid><description>
+&lt;p>最近在帮女朋友做毕设，一个基于Mondrian的小项目。写完聚合表后竟然查询速度还是很慢，遂决定打印出日志追踪sql以查看是否真用到了聚合表。
+Mondrian是带有log4j的，只是没有配置。现将配置步骤写下。&lt;/p></description></item><item><title>Google Maps Android API v2配置教程</title><link>https://www.liaol.net/posts/google-maps-android-api-v2/</link><pubDate>Tue, 15 Apr 2014 06:30:58 +0800</pubDate><guid>https://www.liaol.net/posts/google-maps-android-api-v2/</guid><description>
+&lt;p>其实&lt;a href="https://developers.google.com/maps/documentation/android/">官方文档&lt;/a>已经说的很详细了，英文不佳者可能会有点捉急。 注：开发环境Eclipse&lt;/p>
+&lt;p>1.安装和配置Google Play services SDK 在eclipse中打开Android SDK Manager，下载Extras中的Google Play services 右键项目》Properties》Android  点击add按钮添加google-play-service-lib  (不要勾选Is Library)&lt;/p>
+&lt;p>2.在manifest添加 Google Play services version：添加以下代码到Application下&lt;/p>
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted --></description></item><item><title>Go 多个goroutinue顺序打印数字</title><link>https://www.liaol.net/posts/goroutinue-print-in-order/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://www.liaol.net/posts/goroutinue-print-in-order/</guid><description>
+一. 10个goroutinue顺序打印0-9 # 常规的做法是用10个channel来挨个控制，其实可以用原子包实现，相当于加锁
+func printInOrder() { wg := sync.WaitGroup{} var curr int32 for i := int32(0); i &amp;lt; 10; i++ { wg.Add(1) go func(num int32) { defer wg.Done() for { if n := atomic.LoadInt32(&amp;amp;curr); n == num { fmt.Println(num) atomic.AddInt32(&amp;amp;curr, 1) break } time.Sleep(time.Nanosecond) } }(i) } wg.Wait() } 二. 两个goroutinue分别打印奇偶数 # 同上，还是用原子包
+func printMix() { wg := sync.WaitGroup{} var curr int32 wg.Add(2) go func() { defer wg.Done() for curr &amp;lt; 10 { if n := atomic.</description></item></channel></rss>
