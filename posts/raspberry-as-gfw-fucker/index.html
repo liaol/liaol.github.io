@@ -1,0 +1,232 @@
+<!doctype html><html lang=en><head><title>树莓派作为单独的翻墙机器 ::
+达则兼济天下</title><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="之前写过树莓派 3B 使用 clash 作为透明网关 ，后面由于 3B 只有百兆网口，遂改成直接用刷了老毛子的 Newifi3 运行 clash 。 这几年一直用免费的 oracle vps 作为梯子，勉强够用，直到最近开通了 YouTube Premium 才觉得不够用，就买了个机场服务，速度真是屌，晚高峰4K 无压力。 这时路由器性能就成了瓶颈，YouTube 速度只有 30 Mbps , 而电脑直接运行 clash 可达到 80 Mbps。又得搬出停灰已久的树莓派了。
+"><meta name=keywords content><meta name=robots content="noodp"><link rel=canonical href=https://www.liaol.net/posts/raspberry-as-gfw-fucker/><link rel=stylesheet href=/css/style.css><link rel=stylesheet href=https://www.liaol.net/style.css><link rel=apple-touch-icon-precomposed sizes=144x144 href=https://www.liaol.net/img/apple-touch-icon-144-precomposed.png><link rel="shortcut icon" href=https://www.liaol.net/img/favicon.png><link href=/fonts/Inter-Italic.woff2 rel=preload type=font/woff2 as=font crossorigin><link href=/fonts/Inter-Regular.woff2 rel=preload type=font/woff2 as=font crossorigin><link href=/fonts/Inter-Medium.woff2 rel=preload type=font/woff2 as=font crossorigin><link href=/fonts/Inter-MediumItalic.woff2 rel=preload type=font/woff2 as=font crossorigin><link href=/fonts/Inter-Bold.woff2 rel=preload type=font/woff2 as=font crossorigin><link href=/fonts/Inter-BoldItalic.woff2 rel=preload type=font/woff2 as=font crossorigin><meta name=twitter:card content="summary"><meta name=twitter:title content="树莓派作为单独的翻墙机器"><meta name=twitter:description content="之前写过树莓派 3B 使用 clash 作为透明网关 ，后面由于 3B 只有百兆网口，遂改成直接用刷了老毛子的 Newifi3 运行 clash 。
+这几年一直用免费的 oracle vps 作为梯子，勉强够用，直到最近开通了 YouTube Premium 才觉得不够用，就买了个机场服务，速度真是屌，晚高峰4K 无压力。
+这时路由器性能就成了瓶颈，YouTube 速度只有 30 Mbps , 而电脑直接运行 clash 可达到 80 Mbps。又得搬出停灰已久的树莓派了。"><meta property="og:title" content="树莓派作为单独的翻墙机器"><meta property="og:description" content="之前写过树莓派 3B 使用 clash 作为透明网关 ，后面由于 3B 只有百兆网口，遂改成直接用刷了老毛子的 Newifi3 运行 clash 。
+这几年一直用免费的 oracle vps 作为梯子，勉强够用，直到最近开通了 YouTube Premium 才觉得不够用，就买了个机场服务，速度真是屌，晚高峰4K 无压力。
+这时路由器性能就成了瓶颈，YouTube 速度只有 30 Mbps , 而电脑直接运行 clash 可达到 80 Mbps。又得搬出停灰已久的树莓派了。"><meta property="og:type" content="article"><meta property="og:url" content="https://www.liaol.net/posts/raspberry-as-gfw-fucker/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2023-05-03T22:51:54+08:00"><meta property="article:modified_time" content="2023-05-03T22:51:54+08:00"><meta property="og:site_name" content="达则兼济天下"><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2453465456861242" crossorigin=anonymous></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-68FSBJF5BP"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-68FSBJF5BP")</script></head><body class=light-theme><div class=container><header class=header><span class=header__inner><a href=/ class=logo style=text-decoration:none><span class=logo__mark><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44"><path fill="none" d="M15 8l14.729 14.382L15 35.367"/></svg></span><span class=logo__text>达则兼济天下</span>
+<span class=logo__cursor></span></a>
+<span class=header__right><nav class=menu><ul class="menu__inner menu__inner--desktop"><li><a href=/about>About</a></li><li><a href=/archive>Archive</a></li></ul><ul class="menu__inner menu__inner--mobile"><li><a href=/about>About</a></li><li><a href=/archive>Archive</a></li></ul></nav><span class=menu-trigger><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></span><span class=theme-toggle><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 41c10.4934.0 19-8.5066 19-19C41 11.5066 32.4934 3 22 3 11.5066 3 3 11.5066 3 22s8.5066 19 19 19zM7 22C7 13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22z"/></svg></span></span></span></header><div class=content><article class=post><h1 class=post-title>树莓派作为单独的翻墙机器</h1><div class=post-meta><time class=post-date>2023-05-03</time></div><span class=post-tags><a href=https://www.liaol.net/tags/%E6%A0%91%E8%8E%93%E6%B4%BE/>#树莓派</a>&nbsp;</span><div class=post-content><p>之前写过<a href=/2022/04/raspberry-pi-clash/>树莓派 3B 使用 clash 作为透明网关</a> ，后面由于 3B 只有百兆网口，遂改成直接用刷了老毛子的 Newifi3 运行 clash 。
+这几年一直用免费的 oracle vps 作为梯子，勉强够用，直到最近开通了 YouTube Premium 才觉得不够用，就买了个<a href="https://fuqing.cz/aff.php?aff=3911">机场服务</a>，速度真是屌，晚高峰4K 无压力。
+这时路由器性能就成了瓶颈，YouTube 速度只有 30 Mbps , 而电脑直接运行 clash 可达到 80 Mbps。又得搬出停灰已久的树莓派了。</p><p>这次树莓派不作为透明网关，而是单独的翻墙机器，只提供socks5 代理，国内流量不经过它。
+示意图如下：</p><p><img src=/img/%E6%A0%91%E8%8E%93%E6%B4%BE%E4%BB%A3%E7%90%86.png alt></p><p>需要的工具有 <a href=https://github.com/zfl9/ss-tproxy>ss-tproxy</a> 、 <a href=https://github.com/zfl9/ipt2socks>ipt2socks</a> 和 <a href=https://github.com/Dreamacro/clash>clash</a>
+其中 ss-tproxy 和 ipt2socks 运行在路由器上，clash 运行在树莓派上。
+国外流量走向：ss-tproxy(iptables) -> ip2socks -> clash
+好在老毛子固件自带了 ss-tproxy 和 ipt2socks， 不过默认的ipt2socks 配置不太行，只好用ss-tproxy 直接拉起ipt2socks，不走 web 配置。
+最终只需要配置 ss-tproxy 就行了。</p><p><img src=/img/ss-tproxy-web.png alt></p><p>修改以下 4 处的配置：</p><p>ss_tproxy启动前运行脚本</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e>#!/bin/bash
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>pre_start<span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>    echo <span style=color:#e6db74>&#34;ss-tproxy 启动前执行脚本&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># 为了不用每次都下载ip2socks, 拷贝到了/etc/storage 目录下</span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># 假设你的树莓派上的clash socks5 代理端口为 7891</span>
+</span></span><span style=display:flex><span>    /etc/storage/app/ipt2socks/ipt2socks  -s <span style=color:#e6db74>&#39;树莓派IP&#39;</span> -p <span style=color:#ae81ff>7891</span> -l <span style=color:#ae81ff>1098</span> &gt; /dev/null 2&gt;&amp;<span style=color:#ae81ff>1</span> &amp;
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span>post_start<span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>    echo <span style=color:#e6db74>&#34;ss-tproxy 启动后执行脚本&#34;</span>
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span>pre_stop<span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>    echo <span style=color:#e6db74>&#34;ss-tproxy 停止前执行脚本&#34;</span>
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span>post_stop<span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>    echo <span style=color:#e6db74>&#34;ss-tproxy 停止后执行脚本&#34;</span>
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span>
+</span></span></code></pre></div><p>ss_tproxy配置文档</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># ss-tproxy 配置文件</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># https://github.com/zfl9/ss-tproxy</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>## mode</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#mode=&#39;global&#39;  # global 模式 (不分流)</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#mode=&#39;chnlist&#39; # 回国模式 (china走代理)</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#mode=&#39;gfwlist&#39; # gfwlist 模式 (黑名单)</span>
+</span></span><span style=display:flex><span>mode<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;chnroute&#39;</span> <span style=color:#75715e># chnroute 模式 (白名单)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>## ipv4/6</span>
+</span></span><span style=display:flex><span>ipv4<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;true&#39;</span> <span style=color:#75715e># true:启用ipv4透明代理; false:关闭ipv4透明代理</span>
+</span></span><span style=display:flex><span>ipv6<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;false&#39;</span> <span style=color:#75715e># true:启用ipv6透明代理; false:关闭ipv6透明代理</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>## tproxy</span>
+</span></span><span style=display:flex><span>tproxy<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;true&#39;</span> <span style=color:#75715e># true:TPROXY+TPROXY; false:REDIRECT+TPROXY</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>## tcponly</span>
+</span></span><span style=display:flex><span>tcponly<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;true&#39;</span> <span style=color:#75715e># true:仅代理TCP流量; false:代理TCP和UDP流量</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>## selfonly</span>
+</span></span><span style=display:flex><span>selfonly<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;false&#39;</span> <span style=color:#75715e># true:仅代理本机流量; false:代理本机及&#34;内网&#34;流量</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>## ss_tproxy 配置文件的配置参数覆盖 web 的配置参数</span>
+</span></span><span style=display:flex><span>ext_dns_start_dnsproxy<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;&#39;</span> <span style=color:#75715e>#app_112 0:自动开启第三方 DNS 程序(dnsproxy) ; 1:跳过自动开启第三方 DNS 程序但是继续把DNS绑定到 8053 端口的程序</span>
+</span></span><span style=display:flex><span>ext_ss_dnsproxy_x<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;0&#39;</span>      <span style=color:#75715e>#DNS程序选择，0:dnsproxy ; 1:pdnsd ; 2:dnsmasq</span>
+</span></span><span style=display:flex><span>ext_ss_pdnsd_all<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;1&#39;</span>       <span style=color:#75715e># 0使用[本地DNS] + [GFW规则]查询DNS ; 1 使用 8053 端口查询全部 DNS</span>
+</span></span><span style=display:flex><span>ext_ss_pdnsd_cn_all<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;0&#39;</span>    <span style=color:#75715e>#app_113 0:使用 8053 端口查询全部 DNS 时进行 China 域名加速 ; 1:不进行 China 域名加速</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>## iptables -t nat -I SSTP_OUTPUT -j RETURN</span>
+</span></span><span style=display:flex><span>ext_output_return<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;&#39;</span>      <span style=color:#75715e>#app_114 0:代理本机流量; 1:跳过代理本机流量</span>
+</span></span><span style=display:flex><span>ext_output_udp_return<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;&#39;</span>  <span style=color:#75715e>#ss_udp_enable 0:停用本机 UDP 转发; 1:启动本机 UDP 转发 (需服务器支持 UDP 代理才有效)</span>
+</span></span><span style=display:flex><span>ext_ss_all_udp<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;&#39;</span>         <span style=color:#75715e>#app_81 0:udp 分流模式跟随 tcp 设置; 1:全局 UDP 转发，不分流</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>## iptables -t nat -I SSTP_OUTPUT -m owner --uid-owner 777 -j RETURN</span>
+</span></span><span style=display:flex><span>uid_owner<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;0&#39;</span> <span style=color:#75715e># 非 0 时进行用户ID匹配跳过代理本机流量</span>
+</span></span><span style=display:flex><span>gid_owner<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;1321&#39;</span> <span style=color:#75715e># 非 0 时进行组ID匹配跳过代理本机流量</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>## proxy</span>
+</span></span><span style=display:flex><span>proxy_all_svraddr<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;/opt/app/ss_tproxy/conf/proxy_all_svraddr.conf&#39;</span> <span style=color:#75715e># 服务器的地址或域名的配置文件，会自动处理分类IPv4、IPv6，允许填写多个服务器地址(文件里面每一行一个服务器地址)</span>
+</span></span><span style=display:flex><span>proxy_svraddr4<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;/opt/app/ss_tproxy/conf/proxy_svraddr4.conf&#34;</span> <span style=color:#75715e># 服务器的 IPv4 地址或域名的配置文件，允许填写多个服务器地址(文件里面每一行一个服务器地址)</span>
+</span></span><span style=display:flex><span>proxy_svraddr6<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;/opt/app/ss_tproxy/conf/proxy_svraddr6.conf&#34;</span> <span style=color:#75715e># 服务器的 IPv6 地址或域名的配置文件，允许填写多个服务器地址(文件里面每一行一个服务器地址)</span>
+</span></span><span style=display:flex><span>proxy_svrport<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;1:65535&#39;</span> <span style=color:#75715e># 服务器的监听端口，可填多个端口，格式同 ipts_proxy_dst_port</span>
+</span></span><span style=display:flex><span>proxy_tcpport<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;1098&#39;</span> <span style=color:#75715e># ss/ssr/v2ray 等本机进程的 TCP 监听端口，该端口支持透明代理</span>
+</span></span><span style=display:flex><span>proxy_udpport<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;1098&#39;</span> <span style=color:#75715e># ss/ssr/v2ray 等本机进程的 UDP 监听端口，该端口支持透明代理</span>
+</span></span><span style=display:flex><span>proxy_startcmd<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;date&#39;</span> <span style=color:#75715e># 用于启动本机代理进程的 shell 命令，该命令应该能立即执行完毕</span>
+</span></span><span style=display:flex><span>proxy_stopcmd<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;date&#39;</span> <span style=color:#75715e># 用于关闭本机代理进程的 shell 命令，该命令应该能立即执行完毕</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>## dns</span>
+</span></span><span style=display:flex><span>dns_direct<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;223.5.5.5&#39;</span> <span style=color:#75715e># 本地 IPv4 DNS，不能指定端口，也可以填组织、公司内部 DNS</span>
+</span></span><span style=display:flex><span>dns_direct6<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;240C::6666&#39;</span> <span style=color:#75715e># 本地 IPv6 DNS，不能指定端口，也可以填组织、公司内部 DNS</span>
+</span></span><span style=display:flex><span>dns_remote<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;1.1.1.1#53&#39;</span> <span style=color:#75715e># 远程 IPv4 DNS，必须指定端口，提示：访问远程 DNS 会走代理</span>
+</span></span><span style=display:flex><span>dns_remote6<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;::1#8053&#39;</span> <span style=color:#75715e># 远程 IPv6 DNS，必须指定端口，提示：访问远程 DNS 会走代理</span>
+</span></span><span style=display:flex><span>dns_bind_port<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;8053&#39;</span> <span style=color:#75715e># 本地 dnsproxy 服务器监听端口</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>## dnsmasq</span>
+</span></span><span style=display:flex><span>dnsmasq_bind_port<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;53&#39;</span> <span style=color:#75715e># dnsmasq 服务器监听端口，见 README</span>
+</span></span><span style=display:flex><span>dnsmasq_conf_dir<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;/tmp/ss_tproxy/dnsmasq.d&#39;</span> <span style=color:#75715e># `--conf-dir` 选项的参数，可以填多个，空格隔开</span>
+</span></span><span style=display:flex><span>dnsmasq_conf_file<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;/opt/app/ss_tproxy/dnsmasq_conf_file.txt&#39;</span> <span style=color:#75715e># `--conf-file` 选项的参数，可以填多个，空格隔开</span>
+</span></span><span style=display:flex><span>dnsmasq_conf_string<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;/opt/app/ss_tproxy/conf/dnsmasq_conf_string.conf&#39;</span> <span style=color:#75715e># 自定义配置的配置文件(文件里面每一行一个配置)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>## dns2tcp</span>
+</span></span><span style=display:flex><span>dns2tcp_bind_port<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;65454&#39;</span>               <span style=color:#75715e># dns2tcp 转发服务器监听端口，如有冲突请修改</span>
+</span></span><span style=display:flex><span>dns2tcp_verbose<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;false&#39;</span>                 <span style=color:#75715e># 记录详细日志，除非进行调试，否则不建议启用</span>
+</span></span><span style=display:flex><span>dns2tcp_logfile<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;/tmp/syslog.log&#39;</span>  <span style=color:#75715e># 日志文件，如果不想保存日志可以改为 /dev/null</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>## ipts</span>
+</span></span><span style=display:flex><span>lan_ipv4_ipaddr<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;127.0.0.1&#39;</span> <span style=color:#75715e>#</span>
+</span></span><span style=display:flex><span>lan_ipv6_ipaddr<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;::1&#39;</span>
+</span></span><span style=display:flex><span>ipts_if_lo<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;lo&#39;</span>                 <span style=color:#75715e># 环回接口的名称，在标准发行版中，通常为 lo，如果不是请修改</span>
+</span></span><span style=display:flex><span>ipts_rt_tab<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;233&#39;</span>               <span style=color:#75715e># iproute2 路由表名或表 ID，除非产生冲突，否则不建议改动该选项</span>
+</span></span><span style=display:flex><span>ipts_rt_mark<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;0x2333&#39;</span>           <span style=color:#75715e># iproute2 策略路由的防火墙标记，除非产生冲突，否则不建议改动该选项</span>
+</span></span><span style=display:flex><span>ipts_set_snat<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;false&#39;</span> <span style=color:#75715e># 设置 iptables 的 MASQUERADE 规则，布尔值，`true/false`，详见 README</span>
+</span></span><span style=display:flex><span>ipts_set_snat6<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;false&#39;</span> <span style=color:#75715e># 设置 ip6tables 的 MASQUERADE 规则，布尔值，`true/false`，详见 README</span>
+</span></span><span style=display:flex><span>ipts_reddns_onstop<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;false&#39;</span> <span style=color:#75715e># ss-tproxy stop 后，是否将其它主机发至本机的 DNS 重定向至直连 DNS，详见 README</span>
+</span></span><span style=display:flex><span>ipts_reddns_onstart<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;false&#39;</span> <span style=color:#75715e># ss-tproxy start 后，是否将其它主机发至本机的 DNS 重定向至自定义 IPv4 地址</span>
+</span></span><span style=display:flex><span>ipts_reddns_ip<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;192.168.123.1&#39;</span> <span style=color:#75715e># 自定义 DNS 重定向地址(只支持 IPv4 )</span>
+</span></span><span style=display:flex><span>ipts_proxy_dst_port_tcp<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;1:65535&#39;</span> <span style=color:#75715e># tcp 黑名单 IP 的哪些端口走代理，多个用逗号隔开，冒号为端口范围(含边界)，详见 README</span>
+</span></span><span style=display:flex><span>ipts_proxy_dst_port_udp<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;1:65535&#39;</span> <span style=color:#75715e># udp 黑名单 IP 的哪些端口走代理，多个用逗号隔开，冒号为端口范围(含边界)，详见 README</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># LAN_AC_IP 内网LAN代理转发白名单设置</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># 0 常规, 未在 file_lanlist_ext 设定的 内网IP 根据 mode 配置工作模式 走代理</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># 1 全局, 未在 file_lanlist_ext 设定的 内网IP 使用 全局代理模式 走代理</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># 2 绕过, 未在 file_lanlist_ext 设定的 内网IP 不使用 代理</span>
+</span></span><span style=display:flex><span>LAN_AC_IP<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;0&#39;</span> <span style=color:#75715e># 默认值 0</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>## opts</span>
+</span></span><span style=display:flex><span>opts_ss_netstat<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;auto&#39;</span>                  <span style=color:#75715e># auto/ss/netstat，用哪个端口检测工具，见 README</span>
+</span></span><span style=display:flex><span>opts_ping_cmd_to_use<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;auto&#39;</span>             <span style=color:#75715e># auto/standalone/parameter，ping 相关，见 README</span>
+</span></span><span style=display:flex><span>opts_hostname_resolver<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;auto&#39;</span>           <span style=color:#75715e># auto/doh/dig/getent/ping，用哪个解析工具，见 README</span>
+</span></span><span style=display:flex><span>opts_overwrite_resolv<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;false&#39;</span> <span style=color:#75715e># true/false，定义如何修改 resolv.conf，见 README</span>
+</span></span><span style=display:flex><span>opts_ip_for_check_net<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;&#39;</span> <span style=color:#75715e># 检测外网是否可访问的 IP，ping，留空表示跳过此检查</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>## file</span>
+</span></span><span style=display:flex><span>file_gfwlist_txt<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;/opt/app/ss_tproxy/rule/gfwlist.txt&#39;</span> <span style=color:#75715e># gfwlist/chnlist 模式预置文件</span>
+</span></span><span style=display:flex><span>file_gfwlist_ext<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;/opt/app/ss_tproxy/gfwlist.ext&#39;</span> <span style=color:#75715e># gfwlist/chnlist 模式扩展文件</span>
+</span></span><span style=display:flex><span>file_ignlist_ext<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;/opt/app/ss_tproxy/ignlist.ext&#39;</span> <span style=color:#75715e># global/chnroute 模式扩展文件</span>
+</span></span><span style=display:flex><span>file_lanlist_ext<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;/etc/storage/shadowsocks_ss_spec_lan.sh&#39;</span> <span style=color:#75715e># 内网(LAN)IP行为 模式扩展文件</span>
+</span></span><span style=display:flex><span>file_wanlist_ext<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;/etc/storage/shadowsocks_ss_spec_wan.sh&#39;</span> <span style=color:#75715e># 外网(WAN)IP行为 模式扩展文件</span>
+</span></span><span style=display:flex><span>file_chnroute_txt<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;/opt/app/ss_tproxy/rule/chnroute.txt&#39;</span> <span style=color:#75715e># chnroute 地址段文件(文件里面每一行一个IP)</span>
+</span></span><span style=display:flex><span>file_chnroute6_txt<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;/opt/app/ss_tproxy/rule/chnroute6.txt&#39;</span> <span style=color:#75715e># chnroute 地址段文件(文件里面每一行一个IP)</span>
+</span></span><span style=display:flex><span>file_chnroute_set<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;/opt/app/ss_tproxy/chnroute.set&#39;</span> <span style=color:#75715e># chnroute 地址段文件 (iptables)</span>
+</span></span><span style=display:flex><span>file_chnroute6_set<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;/opt/app/ss_tproxy/chnroute6.set&#39;</span> <span style=color:#75715e># chnroute6 地址段文件 (ip6tables)</span>
+</span></span><span style=display:flex><span>file_dnsserver_pid<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;/opt/app/ss_tproxy/.dnsserver.pid&#39;</span> <span style=color:#75715e># dns 服务器进程的 pid 文件 (shell)</span>
+</span></span></code></pre></div><p>点这里自定义内网(LAN)IP访问代理转发控制功能</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># 绕过树莓派IP，不然就死循环了</span>
+</span></span><span style=display:flex><span>b,192.168.123.2
+</span></span></code></pre></div><p>点这里自定义强制WAN的IP转发或忽略代理中转设置控制功能</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># DNS</span>
+</span></span><span style=display:flex><span>G,1.1.1.1
+</span></span><span style=display:flex><span>G,8.8.8.8
+</span></span><span style=display:flex><span>G,8.8.4.4
+</span></span><span style=display:flex><span>G,208.67.222.222
+</span></span><span style=display:flex><span>G,208.67.220.220
+</span></span><span style=display:flex><span><span style=color:#75715e># </span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Telegram IPv4</span>
+</span></span><span style=display:flex><span>G,91.108.4.0/22
+</span></span><span style=display:flex><span>G,91.108.8.0/22
+</span></span><span style=display:flex><span>G,91.108.12.0/22
+</span></span><span style=display:flex><span>G,91.108.20.0/22
+</span></span><span style=display:flex><span>G,91.108.36.0/23
+</span></span><span style=display:flex><span>G,91.108.38.0/23
+</span></span><span style=display:flex><span>G,91.108.56.0/22
+</span></span><span style=display:flex><span>G,149.154.160.0/20
+</span></span><span style=display:flex><span>G,149.154.161.0/24
+</span></span><span style=display:flex><span>G,149.154.162.0/23
+</span></span><span style=display:flex><span>G,149.154.164.0/22
+</span></span><span style=display:flex><span>G,149.154.168.0/21
+</span></span><span style=display:flex><span>G,149.154.172.0/22
+</span></span><span style=display:flex><span>G,149.154.160.1/32
+</span></span><span style=display:flex><span>G,149.154.160.2/31
+</span></span><span style=display:flex><span>G,149.154.160.4/30
+</span></span><span style=display:flex><span>G,149.154.160.8/29
+</span></span><span style=display:flex><span>G,149.154.160.16/28
+</span></span><span style=display:flex><span>G,149.154.160.32/27
+</span></span><span style=display:flex><span>G,149.154.160.64/26
+</span></span><span style=display:flex><span>G,149.154.160.128/25
+</span></span><span style=display:flex><span>G,149.154.164.0/22
+</span></span><span style=display:flex><span>G,91.108.4.0/22
+</span></span><span style=display:flex><span>G,91.108.56.0/24
+</span></span><span style=display:flex><span>G,109.239.140.0/24
+</span></span><span style=display:flex><span>G,67.198.55.0/24
+</span></span><span style=display:flex><span>G,91.108.56.172
+</span></span><span style=display:flex><span>G,149.154.175.50
+</span></span><span style=display:flex><span><span style=color:#75715e># </span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Telegram IPv6</span>
+</span></span><span style=display:flex><span>~G,2001:67c:4e8::/48
+</span></span><span style=display:flex><span>~G,2001:0b28:f23d::/48
+</span></span><span style=display:flex><span><span style=color:#75715e># </span>
+</span></span><span style=display:flex><span><span style=color:#75715e># api</span>
+</span></span><span style=display:flex><span>@g,api.telegram.org
+</span></span><span style=display:flex><span>@g,raw.githubusercontent.com
+</span></span><span style=display:flex><span>@b,api.cloud.189.cn
+</span></span><span style=display:flex><span>@b,ddns.oray.com
+</span></span><span style=display:flex><span>@b,members.3322.org
+</span></span><span style=display:flex><span>@b,members.3322.net
+</span></span><span style=display:flex><span>@b,ip.3322.net
+</span></span><span style=display:flex><span>@b,www.cloudxns.net
+</span></span><span style=display:flex><span>@b,dnsapi.cn
+</span></span><span style=display:flex><span>@b,api.dnspod.com
+</span></span><span style=display:flex><span>@b,www.ipip.net
+</span></span><span style=display:flex><span>@b,myip.ipip.net
+</span></span><span style=display:flex><span>@b,alidns.aliyuncs.com
+</span></span><span style=display:flex><span>@b,services.googleapis.cn
+</span></span><span style=display:flex><span><span style=color:#75715e># </span>
+</span></span><span style=display:flex><span><span style=color:#75715e># 以下样板是四个网段分别对应BLZ的美/欧/韩/台服</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#G,24.105.0.0/18</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#G,80.239.208.0/20</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#G,182.162.0.0/16</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#G,210.242.235.0/24</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#b,192.168.123.2</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># 苹果服务，直连</span>
+</span></span><span style=display:flex><span>b,17.0.0.0/8
+</span></span><span style=display:flex><span>b,63.92.224.0/19
+</span></span><span style=display:flex><span>b,65.199.22.0/23
+</span></span><span style=display:flex><span>b,139.178.128.0/18
+</span></span><span style=display:flex><span>b,144.178.0.0/19
+</span></span><span style=display:flex><span>b,144.178.36.0/22
+</span></span><span style=display:flex><span>b,144.178.48.0/20
+</span></span><span style=display:flex><span>b,192.35.50.0/24
+</span></span><span style=display:flex><span>b,198.183.17.0/24
+</span></span><span style=display:flex><span>b,205.180.175.0/24
+</span></span></code></pre></div><p>然后在树莓派上运行 clash 就行了，这里不赘述。</p><p>最后效果跟直接在电脑上运行clash 一样，看YouTube 速度能拉满。、</p><p>如果你有更好的方法，欢迎留言。</p><p>注意：如果不开sniffer 的话，clash 只能根据 IP 分流。
+sniffer 开启方法：</p><p>使用 <a href=https://github.com/Dreamacro/clash/wiki/Clash-Premium-Features>Clash Premium</a> , 并配置：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yml data-lang=yml><span style=display:flex><span><span style=color:#f92672>experimental</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>sniff-tls-sni</span>: <span style=color:#66d9ef>true</span>
+</span></span></code></pre></div><p>但是这要求DNS 查询走clash，需要修改路由器上 <code>/etc/storage/script/sh_ss_tproxy.sh</code> 里面的 dnsproxy 配置，指定你的树莓派IP 的clash 的DNS 端口，很麻烦。</p><p>建议直接使用 <a href=https://github.com/MetaCubeX/Clash.Meta>Clash.Meta</a>，并配置：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yml data-lang=yml><span style=display:flex><span><span style=color:#f92672>sniffer</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>enable</span>: <span style=color:#66d9ef>true</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>override-destination</span>: <span style=color:#66d9ef>true</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>sniff</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>http</span>: { <span style=color:#f92672>ports</span>: [<span style=color:#ae81ff>80</span>, <span style=color:#ae81ff>8080</span>] }
+</span></span><span style=display:flex><span>      <span style=color:#f92672>tls</span>: { <span style=color:#f92672>ports</span>: [<span style=color:#ae81ff>443</span>, <span style=color:#ae81ff>8443</span>] }
+</span></span><span style=display:flex><span>    <span style=color:#f92672>skip-domain</span>:
+</span></span><span style=display:flex><span>      <span style=color:#75715e>#Apple</span>
+</span></span><span style=display:flex><span>      - <span style=color:#e6db74>&#39;courier.push.apple.com&#39;</span>
+</span></span><span style=display:flex><span>      <span style=color:#75715e>#mi</span>
+</span></span><span style=display:flex><span>      - <span style=color:#e6db74>&#39;Mijia Cloud&#39;</span>
+</span></span></code></pre></div></div><div class=pagination><div class=pagination__title><span class=pagination__title-h>Read other posts</span><hr></div><div class=pagination__buttons><span class="button previous"><a href=https://www.liaol.net/posts/set-goos-for-gopls-in-neovim/><span class=button__icon>←</span>
+<span class=button__text>Set GOOS for gopls in Vim/Neovim</span></a></span>
+<span class="button next"><a href=https://www.liaol.net/posts/2022-summary/><span class=button__text>2022-总结</span>
+<span class=button__icon>→</span></a></span></div></div><script src=https://giscus.app/client.js data-repo=liaol/liaol.github.io data-repo-id="MDEwOlJlcG9zaXRvcnkyNDI2NTY1OA==" data-category=Announcements data-category-id=DIC_kwDOAXJDus4CbdX8 data-mapping=pathname data-strict=0 data-reactions-enabled=1 data-emit-metadata=0 data-input-position=bottom data-theme=preferred_color_scheme data-lang=zh-CN crossorigin=anonymous async></script></article></div><footer class=footer><div class=footer__inner><a href=/ class=logo style=text-decoration:none><span class=logo__mark><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44"><path fill="none" d="M15 8l14.729 14.382L15 35.367"/></svg></span><span class=logo__text>达则兼济天下</span>
+<span class=logo__cursor></span></a><div class=copyright><span>© 2025 Powered by <a href=https://gohugo.io target=_blank rel=noopener>Hugo</a></span>
+<span><a href=https://github.com/panr/hugo-theme-hello-friend target=_blank>Theme</a> made by <a href=https://github.com/panr target=_blank>panr</a></span></div></div></footer><script type=text/javascript src=/bundle.min.js></script></div></body></html>

@@ -1,0 +1,412 @@
+<!doctype html><html lang=en><head><title>how-to-calculate-the-cpu-usage-in-linux ::
+达则兼济天下</title><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="As we know, one can use top or other tools to get cpu usage。 Below is the output of top
+Now I will explain how to calculate the CPU usage in Linux.
+"><meta name=keywords content><meta name=robots content="noodp"><link rel=canonical href=https://www.liaol.net/posts/how-to-calculate-the-cpu-usage-in-linux/><link rel=stylesheet href=/css/style.css><link rel=stylesheet href=https://www.liaol.net/style.css><link rel=apple-touch-icon-precomposed sizes=144x144 href=https://www.liaol.net/img/apple-touch-icon-144-precomposed.png><link rel="shortcut icon" href=https://www.liaol.net/img/favicon.png><link href=/fonts/Inter-Italic.woff2 rel=preload type=font/woff2 as=font crossorigin><link href=/fonts/Inter-Regular.woff2 rel=preload type=font/woff2 as=font crossorigin><link href=/fonts/Inter-Medium.woff2 rel=preload type=font/woff2 as=font crossorigin><link href=/fonts/Inter-MediumItalic.woff2 rel=preload type=font/woff2 as=font crossorigin><link href=/fonts/Inter-Bold.woff2 rel=preload type=font/woff2 as=font crossorigin><link href=/fonts/Inter-BoldItalic.woff2 rel=preload type=font/woff2 as=font crossorigin><meta name=twitter:card content="summary"><meta name=twitter:title content="how-to-calculate-the-cpu-usage-in-linux"><meta name=twitter:description content="As we know, one can use top or other tools to get cpu usage。 Below is the output of top
+
+Now I will explain how to calculate the CPU usage in Linux."><meta property="og:title" content="how-to-calculate-the-cpu-usage-in-linux"><meta property="og:description" content="As we know, one can use top or other tools to get cpu usage。 Below is the output of top
+
+Now I will explain how to calculate the CPU usage in Linux."><meta property="og:type" content="article"><meta property="og:url" content="https://www.liaol.net/posts/how-to-calculate-the-cpu-usage-in-linux/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2022-05-30T22:59:36+08:00"><meta property="article:modified_time" content="2022-05-30T22:59:36+08:00"><meta property="og:site_name" content="达则兼济天下"><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2453465456861242" crossorigin=anonymous></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-68FSBJF5BP"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-68FSBJF5BP")</script></head><body class=light-theme><div class=container><header class=header><span class=header__inner><a href=/ class=logo style=text-decoration:none><span class=logo__mark><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44"><path fill="none" d="M15 8l14.729 14.382L15 35.367"/></svg></span><span class=logo__text>达则兼济天下</span>
+<span class=logo__cursor></span></a>
+<span class=header__right><nav class=menu><ul class="menu__inner menu__inner--desktop"><li><a href=/about>About</a></li><li><a href=/archive>Archive</a></li></ul><ul class="menu__inner menu__inner--mobile"><li><a href=/about>About</a></li><li><a href=/archive>Archive</a></li></ul></nav><span class=menu-trigger><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></span><span class=theme-toggle><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 41c10.4934.0 19-8.5066 19-19C41 11.5066 32.4934 3 22 3 11.5066 3 3 11.5066 3 22s8.5066 19 19 19zM7 22C7 13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22z"/></svg></span></span></span></header><div class=content><article class=post><h1 class=post-title>how-to-calculate-the-cpu-usage-in-linux</h1><div class=post-meta><time class=post-date>2022-05-30</time></div><div class=post-content><p>As we know, one can use top or other tools to get cpu usage。 Below is the output of top</p><p><img src=/img/top.jpeg alt></p><p>Now I will explain how to calculate the CPU usage in Linux.</p><p>One word, the CPU usage is the percent of the time that the CPU is being used to complete tasks.</p><ul><li>If there is no task to run, CPU is idle;</li><li>If CPU is doing some work, it&rsquo;s busy;</li><li>Sometime CPU is waiting for the IO operation to complete, is&rsquo;s so-called iowait.</li></ul><p>There are two kind of usage.</p><ol><li>usage of host, like the third line of top output above, indicating how busy is the machine.</li><li>usage of task, like the output of <code>pidstat -p &lt;pid></code> or <code>top -p &lt;pid></code>, indicating how busy is the task.</li></ol><p>This two kinds are calculated from two different methods.</p><h2 id=cpu-usage-of-host>CPU usage of host
+<a href=#cpu-usage-of-host class=h-anchor aria-hidden=true>#</a></h2><p>The /proc/stat show the cpu time since boot, you can read man5 proc to learn the meaning of each filed.</p><p>We can use this data to calculate the cpu usage.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>$ cat /proc/stat
+</span></span><span style=display:flex><span>cpu  <span style=color:#ae81ff>213860</span> <span style=color:#ae81ff>18873</span> <span style=color:#ae81ff>343944</span> <span style=color:#ae81ff>189330737</span> <span style=color:#ae81ff>62970</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>31144</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>cpu0 <span style=color:#ae81ff>49673</span> <span style=color:#ae81ff>4080</span> <span style=color:#ae81ff>80138</span> <span style=color:#ae81ff>47314582</span> <span style=color:#ae81ff>14867</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>8846</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>cpu1 <span style=color:#ae81ff>56404</span> <span style=color:#ae81ff>5252</span> <span style=color:#ae81ff>91137</span> <span style=color:#ae81ff>47337714</span> <span style=color:#ae81ff>17009</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>7137</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>cpu2 <span style=color:#ae81ff>53982</span> <span style=color:#ae81ff>4898</span> <span style=color:#ae81ff>86368</span> <span style=color:#ae81ff>47347553</span> <span style=color:#ae81ff>16491</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>6917</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>cpu3 <span style=color:#ae81ff>53799</span> <span style=color:#ae81ff>4642</span> <span style=color:#ae81ff>86300</span> <span style=color:#ae81ff>47330886</span> <span style=color:#ae81ff>14601</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>8242</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>intr <span style=color:#ae81ff>3954208668</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>1591691</span> <span style=color:#ae81ff>74</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>10698876</span> <span style=color:#ae81ff>447683</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>10104090</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>3907847122</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>218</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>274327</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>1261</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>244707</span> <span style=color:#ae81ff>4212</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>3852</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>22990556</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>ctxt <span style=color:#ae81ff>66538962</span>
+</span></span><span style=display:flex><span>btime <span style=color:#ae81ff>1653442436</span>
+</span></span><span style=display:flex><span>processes <span style=color:#ae81ff>115120</span>
+</span></span><span style=display:flex><span>procs_running <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>procs_blocked <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>softirq <span style=color:#ae81ff>121681140</span> <span style=color:#ae81ff>2</span> <span style=color:#ae81ff>9751934</span> <span style=color:#ae81ff>1197630</span> <span style=color:#ae81ff>19644916</span> <span style=color:#ae81ff>285353</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>76231181</span> <span style=color:#ae81ff>11528062</span> <span style=color:#ae81ff>4160</span> <span style=color:#ae81ff>3037902</span>
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>$ man5 proc
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span> /proc/stat
+</span></span><span style=display:flex><span>              kernel/system statistics.  Varies with architecture.
+</span></span><span style=display:flex><span>              Common entries include:
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              cpu <span style=color:#ae81ff>10132153</span> <span style=color:#ae81ff>290696</span> <span style=color:#ae81ff>3084719</span> <span style=color:#ae81ff>46828483</span> <span style=color:#ae81ff>16683</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>25195</span> <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>              <span style=color:#ae81ff>175628</span> <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>              cpu0 <span style=color:#ae81ff>1393280</span> <span style=color:#ae81ff>32966</span> <span style=color:#ae81ff>572056</span> <span style=color:#ae81ff>13343292</span> <span style=color:#ae81ff>6130</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>17875</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>23933</span> <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>                     The amount of time, measured in units of USER_HZ
+</span></span><span style=display:flex><span>                     <span style=color:#f92672>(</span>1/100ths of a second on most architectures, use
+</span></span><span style=display:flex><span>                     sysconf<span style=color:#f92672>(</span>_SC_CLK_TCK<span style=color:#f92672>)</span> to obtain the right value<span style=color:#f92672>)</span>,
+</span></span><span style=display:flex><span>                     that the system <span style=color:#f92672>(</span><span style=color:#e6db74>&#34;cpu&#34;</span> line<span style=color:#f92672>)</span> or the specific CPU
+</span></span><span style=display:flex><span>                     <span style=color:#f92672>(</span><span style=color:#e6db74>&#34;cpuN&#34;</span> line<span style=color:#f92672>)</span> spent in various states:
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                     user   <span style=color:#f92672>(</span>1<span style=color:#f92672>)</span> Time spent in user mode.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                     nice   <span style=color:#f92672>(</span>2<span style=color:#f92672>)</span> Time spent in user mode with low
+</span></span><span style=display:flex><span>                            priority <span style=color:#f92672>(</span>nice<span style=color:#f92672>)</span>.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                     system <span style=color:#f92672>(</span>3<span style=color:#f92672>)</span> Time spent in system mode.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                     idle   <span style=color:#f92672>(</span>4<span style=color:#f92672>)</span> Time spent in the idle task.  This value
+</span></span><span style=display:flex><span>                            should be USER_HZ times the second entry in
+</span></span><span style=display:flex><span>                            the /proc/uptime pseudo-file.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                     iowait <span style=color:#f92672>(</span>since Linux 2.5.41<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>                            <span style=color:#f92672>(</span>5<span style=color:#f92672>)</span> Time waiting <span style=color:#66d9ef>for</span> I/O to complete.  This
+</span></span><span style=display:flex><span>                            value is not reliable, <span style=color:#66d9ef>for</span> the following
+</span></span><span style=display:flex><span>                            reasons:
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                            1. The CPU will not wait <span style=color:#66d9ef>for</span> I/O to
+</span></span><span style=display:flex><span>                               complete; iowait is the time that a task
+</span></span><span style=display:flex><span>                               is waiting <span style=color:#66d9ef>for</span> I/O to complete.  When a
+</span></span><span style=display:flex><span>                               CPU goes into idle state <span style=color:#66d9ef>for</span> outstanding
+</span></span><span style=display:flex><span>                               task I/O, another task will be scheduled
+</span></span><span style=display:flex><span>                               on this CPU.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                            2. On a multi-core CPU, the task waiting <span style=color:#66d9ef>for</span>
+</span></span><span style=display:flex><span>                               I/O to complete is not running on any
+</span></span><span style=display:flex><span>                               CPU, so the iowait of each CPU is
+</span></span><span style=display:flex><span>                               difficult to calculate.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                            3. The value in this field may decrease in
+</span></span><span style=display:flex><span>                               certain conditions.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                     irq <span style=color:#f92672>(</span>since Linux 2.6.0<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>                            <span style=color:#f92672>(</span>6<span style=color:#f92672>)</span> Time servicing interrupts.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                     softirq <span style=color:#f92672>(</span>since Linux 2.6.0<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>                            <span style=color:#f92672>(</span>7<span style=color:#f92672>)</span> Time servicing softirqs.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                     steal <span style=color:#f92672>(</span>since Linux 2.6.11<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>                            <span style=color:#f92672>(</span>8<span style=color:#f92672>)</span> Stolen time, which is the time spent in
+</span></span><span style=display:flex><span>                            other operating systems when running in a
+</span></span><span style=display:flex><span>                            virtualized environment
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                     guest <span style=color:#f92672>(</span>since Linux 2.6.24<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>                            <span style=color:#f92672>(</span>9<span style=color:#f92672>)</span> Time spent running a virtual CPU <span style=color:#66d9ef>for</span>
+</span></span><span style=display:flex><span>                            guest operating systems under the control of
+</span></span><span style=display:flex><span>                            the Linux kernel.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                     guest_nice <span style=color:#f92672>(</span>since Linux 2.6.33<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>                            <span style=color:#f92672>(</span>10<span style=color:#f92672>)</span> Time spent running a niced guest
+</span></span><span style=display:flex><span>                            <span style=color:#f92672>(</span>virtual CPU <span style=color:#66d9ef>for</span> guest operating systems
+</span></span><span style=display:flex><span>                            under the control of the Linux kernel<span style=color:#f92672>)</span>.
+</span></span></code></pre></div><p>We cat /proc/stat and store the content as stat1, sleep a while, cat-store again as stat2.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>    total <span style=color:#f92672>=</span> <span style=color:#f92672>(</span>stat2.cpu.user + stat2.cpu.nice + stat2.cpu.system + stat2.cpu.idle + stat2.cpu.iowait + stat2.cpu.irq + stat2.cpu.softirq + stat2.cpu.steal + stat2.cpu.guest + stat2.cpu.guest<span style=color:#f92672>)</span>-
+</span></span><span style=display:flex><span>    <span style=color:#f92672>(</span>stat1.cpu.user + stat1.cpu.nice + stat1.cpu.system + stat1.cpu.idle + stat1.cpu.iowait + stat1.cpu.irq + stat1.cpu.softirq + stat1.cpu.steal + stat1.cpu.guest + stat1.cpu.guest<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>    idle <span style=color:#f92672>=</span> stat2.cpu.idle - stat1.cpu.idle
+</span></span><span style=display:flex><span>    idle.percent <span style=color:#f92672>=</span> idle/total * <span style=color:#ae81ff>100</span> %
+</span></span><span style=display:flex><span>    usage <span style=color:#f92672>=</span> cpu.percent <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span> - idle
+</span></span></code></pre></div><p>Usage is between 0 and 100%.</p><p>In multi process machine, we can see the cpu0, cpu1&mldr; lines, so we can get the single core usage by same method.</p><h2 id=cpu-usage-of-task>CPU usage of task
+<a href=#cpu-usage-of-task class=h-anchor aria-hidden=true>#</a></h2><p>The <code>/proc/&lt;pid>/stat</code> show the cpu time used by the task since the task was started.
+For example: task pid = 1024, the path is <code>/proc/1024/stat</code>.</p><p>You can also read the <code>man proc</code> the learn the meaning of each filed.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>$ cat /proc/1024/stat
+</span></span><span style=display:flex><span><span style=color:#ae81ff>1024</span> <span style=color:#f92672>(</span>java<span style=color:#f92672>)</span> S <span style=color:#ae81ff>1</span> <span style=color:#ae81ff>730</span> <span style=color:#ae81ff>730</span> <span style=color:#ae81ff>0</span> -1 <span style=color:#ae81ff>1077936384</span> <span style=color:#ae81ff>1225</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>152</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>3192</span> <span style=color:#ae81ff>11929</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>20</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>9</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>7098</span> <span style=color:#ae81ff>5029285888</span> <span style=color:#ae81ff>3554</span> <span style=color:#ae81ff>18446744073709551615</span> <span style=color:#ae81ff>1</span> <span style=color:#ae81ff>1</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>2143420159</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>17</span> <span style=color:#ae81ff>1</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span> <span style=color:#ae81ff>0</span>
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>$ man5 proc 
+</span></span><span style=display:flex><span> /proc/<span style=color:#f92672>[</span>pid<span style=color:#f92672>]</span>/stat
+</span></span><span style=display:flex><span>              Status information about the process.  This is used by
+</span></span><span style=display:flex><span>              ps<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>.  It is defined in the kernel source file
+</span></span><span style=display:flex><span>              fs/proc/array.c.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              The fields, in order, with their proper scanf<span style=color:#f92672>(</span>3<span style=color:#f92672>)</span> format
+</span></span><span style=display:flex><span>              specifiers, are listed below.  Whether or not certain of
+</span></span><span style=display:flex><span>              these fields display valid information is governed by a
+</span></span><span style=display:flex><span>              ptrace access mode PTRACE_MODE_READ_FSCREDS |
+</span></span><span style=display:flex><span>              PTRACE_MODE_NOAUDIT check <span style=color:#f92672>(</span>refer to ptrace<span style=color:#f92672>(</span>2<span style=color:#f92672>))</span>.  If the
+</span></span><span style=display:flex><span>              check denies access, <span style=color:#66d9ef>then</span> the field value is displayed as
+</span></span><span style=display:flex><span>              0.  The affected fields are indicated with the marking
+</span></span><span style=display:flex><span>              <span style=color:#f92672>[</span>PT<span style=color:#f92672>]</span>.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>1<span style=color:#f92672>)</span> pid  %d
+</span></span><span style=display:flex><span>                     The process ID.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>2<span style=color:#f92672>)</span> comm  %s
+</span></span><span style=display:flex><span>                     The filename of the executable, in parentheses.
+</span></span><span style=display:flex><span>                     Strings longer than TASK_COMM_LEN <span style=color:#f92672>(</span>16<span style=color:#f92672>)</span> characters
+</span></span><span style=display:flex><span>                     <span style=color:#f92672>(</span>including the terminating null byte<span style=color:#f92672>)</span> are silently
+</span></span><span style=display:flex><span>                     truncated.  This is visible whether or not the
+</span></span><span style=display:flex><span>                     executable is swapped out.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>3<span style=color:#f92672>)</span> state  %c
+</span></span><span style=display:flex><span>                     One of the following characters, indicating process
+</span></span><span style=display:flex><span>                     state:
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                     R  Running
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                     S  Sleeping in an interruptible wait
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                     D  Waiting in uninterruptible disk sleep
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                     Z  Zombie
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                     T  Stopped <span style=color:#f92672>(</span>on a signal<span style=color:#f92672>)</span> or <span style=color:#f92672>(</span>before Linux 2.6.33<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>                        trace stopped
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                     t  Tracing stop <span style=color:#f92672>(</span>Linux 2.6.33 onward<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                     W  Paging <span style=color:#f92672>(</span>only before Linux 2.6.0<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                     X  Dead <span style=color:#f92672>(</span>from Linux 2.6.0 onward<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                     x  Dead <span style=color:#f92672>(</span>Linux 2.6.33 to 3.13 only<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                     K  Wakekill <span style=color:#f92672>(</span>Linux 2.6.33 to 3.13 only<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                     W  Waking <span style=color:#f92672>(</span>Linux 2.6.33 to 3.13 only<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                     P  Parked <span style=color:#f92672>(</span>Linux 3.9 to 3.13 only<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>4<span style=color:#f92672>)</span> ppid  %d
+</span></span><span style=display:flex><span>                     The PID of the parent of this process.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>5<span style=color:#f92672>)</span> pgrp  %d
+</span></span><span style=display:flex><span>                     The process group ID of the process.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>6<span style=color:#f92672>)</span> session  %d
+</span></span><span style=display:flex><span>                     The session ID of the process.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>7<span style=color:#f92672>)</span> tty_nr  %d
+</span></span><span style=display:flex><span>                     The controlling terminal of the process.  <span style=color:#f92672>(</span>The
+</span></span><span style=display:flex><span>                     minor device number is contained in the combination
+</span></span><span style=display:flex><span>                     of bits <span style=color:#ae81ff>31</span> to <span style=color:#ae81ff>20</span> and <span style=color:#ae81ff>7</span> to 0; the major device
+</span></span><span style=display:flex><span>                     number is in bits <span style=color:#ae81ff>15</span> to 8.<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>8<span style=color:#f92672>)</span> tpgid  %d
+</span></span><span style=display:flex><span>                     The ID of the foreground process group of the
+</span></span><span style=display:flex><span>                     controlling terminal of the process.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>9<span style=color:#f92672>)</span> flags  %u
+</span></span><span style=display:flex><span>                     The kernel flags word of the process.  For bit
+</span></span><span style=display:flex><span>                     meanings, see the PF_* defines in the Linux kernel
+</span></span><span style=display:flex><span>                     source file include/linux/sched.h.  Details depend
+</span></span><span style=display:flex><span>                     on the kernel version.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                     The format <span style=color:#66d9ef>for</span> this field was %lu before Linux 2.6.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>10<span style=color:#f92672>)</span> minflt  %lu
+</span></span><span style=display:flex><span>                     The number of minor faults the process has made
+</span></span><span style=display:flex><span>                     which have not required loading a memory page from
+</span></span><span style=display:flex><span>                     disk.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>11<span style=color:#f92672>)</span> cminflt  %lu
+</span></span><span style=display:flex><span>                     The number of minor faults that the process<span style=color:#e6db74>&#39;s
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                     waited-for children have made.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              (12) majflt  %lu
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                     The number of major faults the process has made
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                     which have required loading a memory page from
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                     disk.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              (13) cmajflt  %lu
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                     The number of major faults that the process&#39;</span>s
+</span></span><span style=display:flex><span>                     waited-for children have made.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>14<span style=color:#f92672>)</span> utime  %lu
+</span></span><span style=display:flex><span>                     Amount of time that this process has been scheduled
+</span></span><span style=display:flex><span>                     in user mode, measured in clock ticks <span style=color:#f92672>(</span>divide by
+</span></span><span style=display:flex><span>                     sysconf<span style=color:#f92672>(</span>_SC_CLK_TCK<span style=color:#f92672>))</span>.  This includes guest time,
+</span></span><span style=display:flex><span>                     guest_time <span style=color:#f92672>(</span>time spent running a virtual CPU, see
+</span></span><span style=display:flex><span>                     below<span style=color:#f92672>)</span>, so that applications that are not aware of
+</span></span><span style=display:flex><span>                     the guest time field <span style=color:#66d9ef>do</span> not lose that time from
+</span></span><span style=display:flex><span>                     their calculations.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>15<span style=color:#f92672>)</span> stime  %lu
+</span></span><span style=display:flex><span>                     Amount of time that this process has been scheduled
+</span></span><span style=display:flex><span>                     in kernel mode, measured in clock ticks <span style=color:#f92672>(</span>divide by
+</span></span><span style=display:flex><span>                     sysconf<span style=color:#f92672>(</span>_SC_CLK_TCK<span style=color:#f92672>))</span>.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>16<span style=color:#f92672>)</span> cutime  %ld
+</span></span><span style=display:flex><span>                     Amount of time that this process<span style=color:#e6db74>&#39;s waited-for
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                     children have been scheduled in user mode, measured
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                     in clock ticks (divide by sysconf(_SC_CLK_TCK)).
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                     (See also times(2).)  This includes guest time,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                     cguest_time (time spent running a virtual CPU, see
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                     below).
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              (17) cstime  %ld
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                     Amount of time that this process&#39;</span>s waited-for
+</span></span><span style=display:flex><span>                     children have been scheduled in kernel mode,
+</span></span><span style=display:flex><span>                     measured in clock ticks <span style=color:#f92672>(</span>divide by
+</span></span><span style=display:flex><span>                     sysconf<span style=color:#f92672>(</span>_SC_CLK_TCK<span style=color:#f92672>))</span>.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>18<span style=color:#f92672>)</span> priority  %ld
+</span></span><span style=display:flex><span>                     <span style=color:#f92672>(</span>Explanation <span style=color:#66d9ef>for</span> Linux 2.6<span style=color:#f92672>)</span> For processes running a
+</span></span><span style=display:flex><span>                     real-time scheduling policy <span style=color:#f92672>(</span>policy below; see
+</span></span><span style=display:flex><span>                     sched_setscheduler<span style=color:#f92672>(</span>2<span style=color:#f92672>))</span>, this is the negated
+</span></span><span style=display:flex><span>                     scheduling priority, minus one; that is, a number
+</span></span><span style=display:flex><span>                     in the range -2 to -100, corresponding to real-time
+</span></span><span style=display:flex><span>                     priorities <span style=color:#ae81ff>1</span> to 99.  For processes running under a
+</span></span><span style=display:flex><span>                     non-real-time scheduling policy, this is the raw
+</span></span><span style=display:flex><span>                     nice value <span style=color:#f92672>(</span>setpriority<span style=color:#f92672>(</span>2<span style=color:#f92672>))</span> as represented in the
+</span></span><span style=display:flex><span>                     kernel.  The kernel stores nice values as numbers
+</span></span><span style=display:flex><span>                     in the range <span style=color:#ae81ff>0</span> <span style=color:#f92672>(</span>high<span style=color:#f92672>)</span> to <span style=color:#ae81ff>39</span> <span style=color:#f92672>(</span>low<span style=color:#f92672>)</span>, corresponding to
+</span></span><span style=display:flex><span>                     the user-visible nice range of -20 to 19.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                     Before Linux 2.6, this was a scaled value based on
+</span></span><span style=display:flex><span>                     the scheduler weighting given to this process.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>19<span style=color:#f92672>)</span> nice  %ld
+</span></span><span style=display:flex><span>                     The nice value <span style=color:#f92672>(</span>see setpriority<span style=color:#f92672>(</span>2<span style=color:#f92672>))</span>, a value in the
+</span></span><span style=display:flex><span>                     range <span style=color:#ae81ff>19</span> <span style=color:#f92672>(</span>low priority<span style=color:#f92672>)</span> to -20 <span style=color:#f92672>(</span>high priority<span style=color:#f92672>)</span>.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>20<span style=color:#f92672>)</span> num_threads  %ld
+</span></span><span style=display:flex><span>                     Number of threads in this process <span style=color:#f92672>(</span>since Linux
+</span></span><span style=display:flex><span>                     2.6<span style=color:#f92672>)</span>.  Before kernel 2.6, this field was hard coded
+</span></span><span style=display:flex><span>                     to <span style=color:#ae81ff>0</span> as a placeholder <span style=color:#66d9ef>for</span> an earlier removed field.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>21<span style=color:#f92672>)</span> itrealvalue  %ld
+</span></span><span style=display:flex><span>                     The time in jiffies before the next SIGALRM is sent
+</span></span><span style=display:flex><span>                     to the process due to an interval timer.  Since
+</span></span><span style=display:flex><span>                     kernel 2.6.17, this field is no longer maintained,
+</span></span><span style=display:flex><span>                     and is hard coded as 0.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>22<span style=color:#f92672>)</span> starttime  %llu
+</span></span><span style=display:flex><span>                     The time the process started after system boot.  In
+</span></span><span style=display:flex><span>                     kernels before Linux 2.6, this value was expressed
+</span></span><span style=display:flex><span>                     in jiffies.  Since Linux 2.6, the value is
+</span></span><span style=display:flex><span>                     expressed in clock ticks <span style=color:#f92672>(</span>divide by
+</span></span><span style=display:flex><span>                     sysconf<span style=color:#f92672>(</span>_SC_CLK_TCK<span style=color:#f92672>))</span>.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                     The format <span style=color:#66d9ef>for</span> this field was %lu before Linux 2.6.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>23<span style=color:#f92672>)</span> vsize  %lu
+</span></span><span style=display:flex><span>                     Virtual memory size in bytes.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>24<span style=color:#f92672>)</span> rss  %ld
+</span></span><span style=display:flex><span>                     Resident Set Size: number of pages the process has
+</span></span><span style=display:flex><span>                     in real memory.  This is just the pages which count
+</span></span><span style=display:flex><span>                     toward text, data, or stack space.  This does not
+</span></span><span style=display:flex><span>                     include pages which have not been demand-loaded in,
+</span></span><span style=display:flex><span>                     or which are swapped out.  This value is
+</span></span><span style=display:flex><span>                     inaccurate; see /proc/<span style=color:#f92672>[</span>pid<span style=color:#f92672>]</span>/statm below.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>25<span style=color:#f92672>)</span> rsslim  %lu
+</span></span><span style=display:flex><span>                     Current soft limit in bytes on the rss of the
+</span></span><span style=display:flex><span>                     process; see the description of RLIMIT_RSS in
+</span></span><span style=display:flex><span>                     getrlimit<span style=color:#f92672>(</span>2<span style=color:#f92672>)</span>.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>26<span style=color:#f92672>)</span> startcode  %lu  <span style=color:#f92672>[</span>PT<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>                     The address above which program text can run.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>27<span style=color:#f92672>)</span> endcode  %lu  <span style=color:#f92672>[</span>PT<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>                     The address below which program text can run.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>28<span style=color:#f92672>)</span> startstack  %lu  <span style=color:#f92672>[</span>PT<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>                     The address of the start <span style=color:#f92672>(</span>i.e., bottom<span style=color:#f92672>)</span> of the
+</span></span><span style=display:flex><span>                     stack.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>29<span style=color:#f92672>)</span> kstkesp  %lu  <span style=color:#f92672>[</span>PT<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>                     The current value of ESP <span style=color:#f92672>(</span>stack pointer<span style=color:#f92672>)</span>, as found
+</span></span><span style=display:flex><span>                     in the kernel stack page <span style=color:#66d9ef>for</span> the process.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>30<span style=color:#f92672>)</span> kstkeip  %lu  <span style=color:#f92672>[</span>PT<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>                     The current EIP <span style=color:#f92672>(</span>instruction pointer<span style=color:#f92672>)</span>.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>31<span style=color:#f92672>)</span> signal  %lu
+</span></span><span style=display:flex><span>                     The bitmap of pending signals, displayed as a
+</span></span><span style=display:flex><span>                     decimal number.  Obsolete, because it does not
+</span></span><span style=display:flex><span>                     provide information on real-time signals; use
+</span></span><span style=display:flex><span>                     /proc/<span style=color:#f92672>[</span>pid<span style=color:#f92672>]</span>/status instead.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>32<span style=color:#f92672>)</span> blocked  %lu
+</span></span><span style=display:flex><span>                     The bitmap of blocked signals, displayed as a
+</span></span><span style=display:flex><span>                     decimal number.  Obsolete, because it does not
+</span></span><span style=display:flex><span>                     provide information on real-time signals; use
+</span></span><span style=display:flex><span>                     /proc/<span style=color:#f92672>[</span>pid<span style=color:#f92672>]</span>/status instead.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>33<span style=color:#f92672>)</span> sigignore  %lu
+</span></span><span style=display:flex><span>                     The bitmap of ignored signals, displayed as a
+</span></span><span style=display:flex><span>                     decimal number.  Obsolete, because it does not
+</span></span><span style=display:flex><span>                     provide information on real-time signals; use
+</span></span><span style=display:flex><span>                     /proc/<span style=color:#f92672>[</span>pid<span style=color:#f92672>]</span>/status instead.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>34<span style=color:#f92672>)</span> sigcatch  %lu
+</span></span><span style=display:flex><span>                     The bitmap of caught signals, displayed as a
+</span></span><span style=display:flex><span>                     decimal number.  Obsolete, because it does not
+</span></span><span style=display:flex><span>                     provide information on real-time signals; use
+</span></span><span style=display:flex><span>                     /proc/<span style=color:#f92672>[</span>pid<span style=color:#f92672>]</span>/status instead.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>35<span style=color:#f92672>)</span> wchan  %lu  <span style=color:#f92672>[</span>PT<span style=color:#f92672>]</span>
+</span></span><span style=display:flex><span>                     This is the <span style=color:#e6db74>&#34;channel&#34;</span> in which the process is
+</span></span><span style=display:flex><span>                     waiting.  It is the address of a location in the
+</span></span><span style=display:flex><span>                     kernel where the process is sleeping.  The
+</span></span><span style=display:flex><span>                     corresponding symbolic name can be found in
+</span></span><span style=display:flex><span>                     /proc/<span style=color:#f92672>[</span>pid<span style=color:#f92672>]</span>/wchan.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>36<span style=color:#f92672>)</span> nswap  %lu
+</span></span><span style=display:flex><span>                     Number of pages swapped <span style=color:#f92672>(</span>not maintained<span style=color:#f92672>)</span>.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>37<span style=color:#f92672>)</span> cnswap  %lu
+</span></span><span style=display:flex><span>                     Cumulative nswap <span style=color:#66d9ef>for</span> child processes <span style=color:#f92672>(</span>not
+</span></span><span style=display:flex><span>                     maintained<span style=color:#f92672>)</span>.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>38<span style=color:#f92672>)</span> exit_signal  %d  <span style=color:#f92672>(</span>since Linux 2.1.22<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>                     Signal to be sent to parent when we die.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>39<span style=color:#f92672>)</span> processor  %d  <span style=color:#f92672>(</span>since Linux 2.2.8<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>                     CPU number last executed on.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>40<span style=color:#f92672>)</span> rt_priority  %u  <span style=color:#f92672>(</span>since Linux 2.5.19<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>                     Real-time scheduling priority, a number in the
+</span></span><span style=display:flex><span>                     range <span style=color:#ae81ff>1</span> to <span style=color:#ae81ff>99</span> <span style=color:#66d9ef>for</span> processes scheduled under a real-
+</span></span><span style=display:flex><span>                     time policy, or 0, <span style=color:#66d9ef>for</span> non-real-time processes <span style=color:#f92672>(</span>see
+</span></span><span style=display:flex><span>                     sched_setscheduler<span style=color:#f92672>(</span>2<span style=color:#f92672>))</span>.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>41<span style=color:#f92672>)</span> policy  %u  <span style=color:#f92672>(</span>since Linux 2.5.19<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>                     Scheduling policy <span style=color:#f92672>(</span>see sched_setscheduler<span style=color:#f92672>(</span>2<span style=color:#f92672>))</span>.
+</span></span><span style=display:flex><span>                     Decode using the SCHED_* constants in
+</span></span><span style=display:flex><span>                     linux/sched.h.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                     The format <span style=color:#66d9ef>for</span> this field was %lu before Linux
+</span></span><span style=display:flex><span>                     2.6.22.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>42<span style=color:#f92672>)</span> delayacct_blkio_ticks  %llu  <span style=color:#f92672>(</span>since Linux 2.6.18<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>                     Aggregated block I/O delays, measured in clock
+</span></span><span style=display:flex><span>                     ticks <span style=color:#f92672>(</span>centiseconds<span style=color:#f92672>)</span>.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>43<span style=color:#f92672>)</span> guest_time  %lu  <span style=color:#f92672>(</span>since Linux 2.6.24<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>                     Guest time of the process <span style=color:#f92672>(</span>time spent running a
+</span></span><span style=display:flex><span>                     virtual CPU <span style=color:#66d9ef>for</span> a guest operating system<span style=color:#f92672>)</span>, measured
+</span></span><span style=display:flex><span>                     in clock ticks <span style=color:#f92672>(</span>divide by sysconf<span style=color:#f92672>(</span>_SC_CLK_TCK<span style=color:#f92672>))</span>.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>              <span style=color:#f92672>(</span>44<span style=color:#f92672>)</span> cguest_time  %ld  <span style=color:#f92672>(</span>since Linux 2.6.24<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>                     Guest time of the process<span style=color:#e6db74>&#39;s children, measured in
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                     clock ticks (divide by sysconf(_SC_CLK_TCK)).
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              (45) start_data  %lu  (since Linux 3.3)  [PT]
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                     Address above which program initialized and
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                     uninitialized (BSS) data are placed.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              (46) end_data  %lu  (since Linux 3.3)  [PT]
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                     Address below which program initialized and
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                     uninitialized (BSS) data are placed.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              (47) start_brk  %lu  (since Linux 3.3)  [PT]
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                     Address above which program heap can be expanded
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                     with brk(2).
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              (48) arg_start  %lu  (since Linux 3.5)  [PT]
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                     Address above which program command-line arguments
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                     (argv) are placed.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              (49) arg_end  %lu  (since Linux 3.5)  [PT]
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                     Address below program command-line arguments (argv)
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                     are placed.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              (50) env_start  %lu  (since Linux 3.5)  [PT]
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                     Address above which program environment is placed.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              (51) env_end  %lu  (since Linux 3.5)  [PT]
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                     Address below which program environment is placed.
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              (52) exit_code  %d  (since Linux 3.5)  [PT]
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                     The thread&#39;</span>s exit status in the form reported by
+</span></span><span style=display:flex><span>                     waitpid<span style=color:#f92672>(</span>2<span style=color:#f92672>)</span>.
+</span></span></code></pre></div><p>So the cpu usage of one task is <code>the cpu time used by the task(14 utime + 15 stime, unit is clock ticks)</code> / <code>the real time past (from /proc/uptime, unit is seconds)</code>.</p><p>We cat <code>/proc/&lt;pid>/stat</code> and <code>/proc/uptime</code>, store the content as stat1 and uptime1, sleep a while, cat-store again as stat2 and uptime2.</p><pre tabindex=0><code>cpu usage of task = 
+       ((stat2.utime+stat2.stime-stat1.utime-stat1.stime)/sysconf(_SC_CLK_TCK)) / 
+       (uptime2 - uptime1) 
+       * 100%
+</code></pre><p>Usage is between 0 and (count of cpus) * 100%.
+If the task has multi thread and all run in different core together, than the cpu usage of task is larger than 100%.
+That`s different from the cpu usage of host.</p></div><div class=pagination><div class=pagination__title><span class=pagination__title-h>Read other posts</span><hr></div><div class=pagination__buttons><span class="button previous"><a href=https://www.liaol.net/posts/forget-to-close-rows/><span class=button__icon>←</span>
+<span class=button__text>记一次忘记 close rows 引发的惨案</span></a></span>
+<span class="button next"><a href=https://www.liaol.net/posts/raspberry-pi-clash/><span class=button__text>树莓派 3B 使用 clash 作为旁路由网关</span>
+<span class=button__icon>→</span></a></span></div></div><script src=https://giscus.app/client.js data-repo=liaol/liaol.github.io data-repo-id="MDEwOlJlcG9zaXRvcnkyNDI2NTY1OA==" data-category=Announcements data-category-id=DIC_kwDOAXJDus4CbdX8 data-mapping=pathname data-strict=0 data-reactions-enabled=1 data-emit-metadata=0 data-input-position=bottom data-theme=preferred_color_scheme data-lang=zh-CN crossorigin=anonymous async></script></article></div><footer class=footer><div class=footer__inner><a href=/ class=logo style=text-decoration:none><span class=logo__mark><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44"><path fill="none" d="M15 8l14.729 14.382L15 35.367"/></svg></span><span class=logo__text>达则兼济天下</span>
+<span class=logo__cursor></span></a><div class=copyright><span>© 2025 Powered by <a href=https://gohugo.io target=_blank rel=noopener>Hugo</a></span>
+<span><a href=https://github.com/panr/hugo-theme-hello-friend target=_blank>Theme</a> made by <a href=https://github.com/panr target=_blank>panr</a></span></div></div></footer><script type=text/javascript src=/bundle.min.js></script></div></body></html>

@@ -1,0 +1,128 @@
+<!doctype html><html lang=en><head><title>mondrian教程 ::
+达则兼济天下</title><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="终于做完mondrian的小项目，先将遇到了一些问题和经验记下来。
+1. 支持中文 # 在web.xml中添加过滤如下：
+"><meta name=keywords content><meta name=robots content="noodp"><link rel=canonical href=https://www.liaol.net/posts/mondrian-tutor/><link rel=stylesheet href=/css/style.css><link rel=stylesheet href=https://www.liaol.net/style.css><link rel=apple-touch-icon-precomposed sizes=144x144 href=https://www.liaol.net/img/apple-touch-icon-144-precomposed.png><link rel="shortcut icon" href=https://www.liaol.net/img/favicon.png><link href=/fonts/Inter-Italic.woff2 rel=preload type=font/woff2 as=font crossorigin><link href=/fonts/Inter-Regular.woff2 rel=preload type=font/woff2 as=font crossorigin><link href=/fonts/Inter-Medium.woff2 rel=preload type=font/woff2 as=font crossorigin><link href=/fonts/Inter-MediumItalic.woff2 rel=preload type=font/woff2 as=font crossorigin><link href=/fonts/Inter-Bold.woff2 rel=preload type=font/woff2 as=font crossorigin><link href=/fonts/Inter-BoldItalic.woff2 rel=preload type=font/woff2 as=font crossorigin><meta name=twitter:card content="summary"><meta name=twitter:title content="mondrian教程"><meta name=twitter:description content="终于做完mondrian的小项目，先将遇到了一些问题和经验记下来。
+
+  1. 支持中文
+  #
+
+在web.xml中添加过滤如下："><meta property="og:title" content="mondrian教程"><meta property="og:description" content="终于做完mondrian的小项目，先将遇到了一些问题和经验记下来。
+
+  1. 支持中文
+  #
+
+在web.xml中添加过滤如下："><meta property="og:type" content="article"><meta property="og:url" content="https://www.liaol.net/posts/mondrian-tutor/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2014-05-23T14:04:27+08:00"><meta property="article:modified_time" content="2014-05-23T14:04:27+08:00"><meta property="og:site_name" content="达则兼济天下"><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2453465456861242" crossorigin=anonymous></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-68FSBJF5BP"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-68FSBJF5BP")</script></head><body class=light-theme><div class=container><header class=header><span class=header__inner><a href=/ class=logo style=text-decoration:none><span class=logo__mark><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44"><path fill="none" d="M15 8l14.729 14.382L15 35.367"/></svg></span><span class=logo__text>达则兼济天下</span>
+<span class=logo__cursor></span></a>
+<span class=header__right><nav class=menu><ul class="menu__inner menu__inner--desktop"><li><a href=/about>About</a></li><li><a href=/archive>Archive</a></li></ul><ul class="menu__inner menu__inner--mobile"><li><a href=/about>About</a></li><li><a href=/archive>Archive</a></li></ul></nav><span class=menu-trigger><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></span><span class=theme-toggle><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 41c10.4934.0 19-8.5066 19-19C41 11.5066 32.4934 3 22 3 11.5066 3 3 11.5066 3 22s8.5066 19 19 19zM7 22C7 13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22z"/></svg></span></span></span></header><div class=content><article class=post><h1 class=post-title>mondrian教程</h1><div class=post-meta><time class=post-date>2014-05-23</time></div><span class=post-tags><a href=https://www.liaol.net/tags/monrian/>#Monrian</a>&nbsp;</span><div class=post-content><p>终于做完mondrian的小项目，先将遇到了一些问题和经验记下来。</p><h2 id=1-支持中文>1. 支持中文
+<a href=#1-%e6%94%af%e6%8c%81%e4%b8%ad%e6%96%87 class=h-anchor aria-hidden=true>#</a></h2><p>在web.xml中添加过滤如下：</p><pre tabindex=0><code>&lt;servlet&gt; 
+&lt;servlet-name&gt;MondrianXmlaServlet&lt;/servlet-name&gt; 
+&lt;servlet-class&gt;mondrian.xmla.impl.DynamicDatasourceXmlaServlet&lt;/servlet-class&gt; 
+&lt;init-param&gt; 
+&lt;param-name&gt;CharacterEncoding&lt;/param-name&gt; 
+&lt;param-value&gt;UTF-8&lt;/param-value&gt; 
+&lt;/init-param&gt;       
+&lt;/servlet&gt;
+</code></pre><p>然后在把各个文件上面的编码方式改成utf-8<br>如 xml version=&ldquo;1.0&rdquo; encoding=&ldquo;UTF-8&rdquo;</p><h2 id=2-scema怎么写>2. Scema怎么写
+<a href=#2-scema%e6%80%8e%e4%b9%88%e5%86%99 class=h-anchor aria-hidden=true>#</a></h2><p>这个问题想必是每个新手的头疼的问题，官方的例子看不懂，英文文档看得吃力。
+建议先了解下数据仓库中的scema，在看下官方文档，模仿官方例子写个最简单的scema。这里给出个简单的scame供参考</p><pre tabindex=0><code>&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;
+&lt;Schema name=&#34;FoodMart&#34;&gt;
+&lt;Cube name=&#34;shebao&#34; defaultMeasure=&#34;就诊人数&#34;&gt;
+&lt;Table name=&#34;WJ_MZSFB0_201005&#34;&gt;&lt;/Table&gt;
+&lt;Dimension name=&#34;网点级别&#34; foreignKey=&#34;WDJBBH&#34;&gt;
+&lt;Hierarchy hasAll=&#34;true&#34; allMemberName=&#34;所有级别&#34; primaryKey=&#34;WDJBBH&#34;&gt;
+&lt;Table name=&#34;BM_WDJBB0&#34;/&gt;
+&lt;Level name=&#34;jibie&#34; column=&#34;WDJBMC&#34; uniqueMembers=&#34;false&#34;/&gt;
+&lt;/Hierarchy&gt;
+&lt;/Dimension&gt;
+&lt;Dimension name=&#34;IC卡状态&#34; foreignKey=&#34;ICZTBH&#34;&gt;
+&lt;Hierarchy hasAll=&#34;true&#34; allMemberName=&#34;所有状态&#34; primaryKey=&#34;ICZTBH&#34;&gt;
+&lt;Table name=&#34;BM_ICKZT0&#34;/&gt;
+&lt;Level name=&#34;status&#34; column=&#34;ICZTMC&#34; uniqueMembers=&#34;false&#34;/&gt;
+&lt;/Hierarchy&gt;
+&lt;/Dimension&gt;
+
+&lt;Dimension name=&#34;时间&#34; foreignKey=&#34;TIME_ID&#34;&gt;
+&lt;Hierarchy hasAll=&#34;true&#34; allMemberName=&#34;所有时间&#34; primaryKey=&#34;TIME_ID&#34;&gt;
+&lt;Table name=&#34;BM_TIME00&#34;/&gt;
+&lt;Level name=&#34;week&#34; column=&#34;WEEK&#34; uniqueMembers=&#34;true&#34;/&gt;
+&lt;Level name=&#34;day&#34; column=&#34;DAY&#34; uniqueMembers=&#34;false&#34;/&gt;
+&lt;Level name=&#34;hour&#34; column=&#34;HOUR&#34; uniqueMembers=&#34;false&#34;/&gt;
+&lt;/Hierarchy&gt;
+&lt;/Dimension&gt;
+
+&lt;Measure name=&#34;就诊人数&#34; column=&#34;LRLSH0&#34; aggregator=&#34;distinct-count&#34; datatype=&#34;Integer&#34;/&gt;
+&lt;Measure name=&#34;就诊次数&#34; column=&#34;DJLSH0&#34; aggregator=&#34;count&#34; datatype=&#34;Integer&#34;/&gt;
+&lt;Measure name=&#34;保费合计&#34; column=&#34;BCBXF0&#34; aggregator=&#34;sum&#34; datatype=&#34;Numeric&#34;/&gt;
+&lt;/Cube&gt;
+&lt;/Schema&gt;
+</code></pre><p>这里对应的mdx语句为</p><pre tabindex=0><code>select
+{[Measures].[就诊人数], [Measures].[就诊次数], [Measures].[保费合计]} on columns,
+{([时间].[所有时间],[网点级别].[所有级别], [IC卡状态].[所有状态])} ON rows
+from shebao
+</code></pre><h2 id=3-query01resultoverflowoccured>3. query01.result.overflowOccured
+<a href=#3-query01resultoverflowoccured class=h-anchor aria-hidden=true>#</a></h2><p>这个问题是由于维度中的表名或者列名拼写错误，特别是大小写。oracle是区分大小写的，切记。</p><h2 id=4-oracle中的表名列名如果有小写就要用双引号才能识别否则会出现未定义的表名和列名的错误>4. oracle中的表名列名如果有小写，就要用双引号才能识别，否则会出现未定义的表名和列名的错误
+<a href=#4-oracle%e4%b8%ad%e7%9a%84%e8%a1%a8%e5%90%8d%e5%88%97%e5%90%8d%e5%a6%82%e6%9e%9c%e6%9c%89%e5%b0%8f%e5%86%99%e5%b0%b1%e8%a6%81%e7%94%a8%e5%8f%8c%e5%bc%95%e5%8f%b7%e6%89%8d%e8%83%bd%e8%af%86%e5%88%ab%e5%90%a6%e5%88%99%e4%bc%9a%e5%87%ba%e7%8e%b0%e6%9c%aa%e5%ae%9a%e4%b9%89%e7%9a%84%e8%a1%a8%e5%90%8d%e5%92%8c%e5%88%97%e5%90%8d%e7%9a%84%e9%94%99%e8%af%af class=h-anchor aria-hidden=true>#</a></h2><h2 id=5-创建聚合表>5. 创建聚合表
+<a href=#5-%e5%88%9b%e5%bb%ba%e8%81%9a%e5%90%88%e8%a1%a8 class=h-anchor aria-hidden=true>#</a></h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sql data-lang=sql><span style=display:flex><span><span style=color:#66d9ef>CREATE</span> <span style=color:#66d9ef>TABLE</span> AGG_C_1_WJ_MZSFB0(WEEK VARCHAR(<span style=color:#ae81ff>20</span>),GZZT00 CHAR(<span style=color:#ae81ff>6</span>),XFLXBH CHAR(<span style=color:#ae81ff>6</span>),PEOPLE_SUM INTEGER,TIMES_SUM INTEGER,MONEY_SUM INTEGER,FACT_COUNT INTEGER);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>INSERT</span> <span style=color:#66d9ef>INTO</span> AGG_C_1_WJ_MZSFB0_201005(
+</span></span><span style=display:flex><span>WEEK,
+</span></span><span style=display:flex><span>GZZT00,
+</span></span><span style=display:flex><span>XFLXBH,
+</span></span><span style=display:flex><span>PEOPLE_SUM,
+</span></span><span style=display:flex><span>TIMES_SUM,
+</span></span><span style=display:flex><span>MONEY_SUM,
+</span></span><span style=display:flex><span>FACT_COUNT)
+</span></span><span style=display:flex><span><span style=color:#66d9ef>SELECT</span>
+</span></span><span style=display:flex><span>BM_TIME00.WEEK,
+</span></span><span style=display:flex><span>WJ_MZSFB0_201005.GZZT00,
+</span></span><span style=display:flex><span>WJ_MZSFB0_201005.XFLXBH,
+</span></span><span style=display:flex><span><span style=color:#66d9ef>COUNT</span>(<span style=color:#66d9ef>DISTINCT</span> WJ_MZSFB0_201005.LRLSH0) <span style=color:#66d9ef>AS</span> PEOPLE_SUM,
+</span></span><span style=display:flex><span><span style=color:#66d9ef>COUNT</span>(WJ_MZSFB0_201005.DJLSH0) <span style=color:#66d9ef>AS</span> TIMES_SUM,
+</span></span><span style=display:flex><span><span style=color:#66d9ef>SUM</span>(WJ_MZSFB0_201005.BCBXF0) <span style=color:#66d9ef>AS</span> MENEY_SUM,
+</span></span><span style=display:flex><span><span style=color:#66d9ef>COUNT</span>(<span style=color:#f92672>*</span>) <span style=color:#66d9ef>AS</span> FACT_COUNT
+</span></span><span style=display:flex><span><span style=color:#66d9ef>FROM</span> 
+</span></span><span style=display:flex><span>WJ_MZSFB0_201005,BM_TIME00
+</span></span><span style=display:flex><span><span style=color:#66d9ef>WHERE</span>
+</span></span><span style=display:flex><span>WJ_MZSFB0_201005.TIME_ID<span style=color:#f92672>=</span>BM_TIME00.TIME_ID
+</span></span><span style=display:flex><span><span style=color:#66d9ef>GROUP</span> <span style=color:#66d9ef>BY</span> 
+</span></span><span style=display:flex><span>BM_TIME00.WEEK,
+</span></span><span style=display:flex><span>WJ_MZSFB0_201005.GZZT00,
+</span></span><span style=display:flex><span>WJ_MZSFB0_201005.XFLXBH;
+</span></span></code></pre></div><p>Scema中的定义如下</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-xml data-lang=xml><span style=display:flex><span><span style=color:#f92672>&lt;Table</span> <span style=color:#a6e22e>name=</span><span style=color:#e6db74>&#34;WJ_MZSFB0_201005&#34;</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;AggName</span> <span style=color:#a6e22e>name=</span><span style=color:#e6db74>&#34;AGG_C_0_WJ_MZSFB0_201005&#34;</span><span style=color:#f92672>&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;AggFactCount</span> <span style=color:#a6e22e>column=</span><span style=color:#e6db74>&#34;FACT_COUNT&#34;</span><span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;AggForeignKey</span> <span style=color:#a6e22e>factColumn=</span><span style=color:#e6db74>&#34;GZZT00&#34;</span> <span style=color:#a6e22e>aggColumn=</span><span style=color:#e6db74>&#34;GZZT00&#34;</span> <span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;AggForeignKey</span> <span style=color:#a6e22e>factColumn=</span><span style=color:#e6db74>&#34;XFLXBH&#34;</span> <span style=color:#a6e22e>aggColumn=</span><span style=color:#e6db74>&#34;XFLXBH&#34;</span> <span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span> <span style=color:#f92672>&lt;AggForeignKey</span> <span style=color:#a6e22e>factColumn=</span><span style=color:#e6db74>&#34;ICZTBH&#34;</span> <span style=color:#a6e22e>aggColumn=</span><span style=color:#e6db74>&#34;ICZTBH&#34;</span> <span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&lt;AggForeignKey</span> <span style=color:#a6e22e>factColumn=</span><span style=color:#e6db74>&#34;DWLB00&#34;</span> <span style=color:#a6e22e>aggColumn=</span><span style=color:#e6db74>&#34;DWLB00&#34;</span> <span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span> <span style=color:#f92672>&lt;AggForeignKey</span> <span style=color:#a6e22e>factColumn=</span><span style=color:#e6db74>&#34;WDJBBH&#34;</span> <span style=color:#a6e22e>aggColumn=</span><span style=color:#e6db74>&#34;WDJBBH&#34;</span> <span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;AggMeasure</span> <span style=color:#a6e22e>name=</span><span style=color:#e6db74>&#34;[Measures].[就诊人数]&#34;</span> <span style=color:#a6e22e>column=</span><span style=color:#e6db74>&#34;PEOPLE_SUM&#34;</span> <span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;AggMeasure</span> <span style=color:#a6e22e>name=</span><span style=color:#e6db74>&#34;[Measures].[就诊次数]&#34;</span> <span style=color:#a6e22e>column=</span><span style=color:#e6db74>&#34;TIMES_SUM&#34;</span> <span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;AggMeasure</span> <span style=color:#a6e22e>name=</span><span style=color:#e6db74>&#34;[Measures].[保费合计]&#34;</span> <span style=color:#a6e22e>column=</span><span style=color:#e6db74>&#34;MONEY_SUM&#34;</span> <span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;AggLevel</span> <span style=color:#a6e22e>name=</span><span style=color:#e6db74>&#34;[时间].[week]&#34;</span> <span style=color:#a6e22e>column=</span><span style=color:#e6db74>&#34;WEEK&#34;</span> <span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;AggLevel</span> <span style=color:#a6e22e>name=</span><span style=color:#e6db74>&#34;[消费类型].[type]&#34;</span> <span style=color:#a6e22e>column=</span><span style=color:#e6db74>&#34;XFLXBG&#34;</span> <span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;AggLevel</span> <span style=color:#a6e22e>name=</span><span style=color:#e6db74>&#34;[工作状态].[status]&#34;</span> <span style=color:#a6e22e>column=</span><span style=color:#e6db74>&#34;GZZT00&#34;</span> <span style=color:#f92672>/&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>&lt;/AggName&gt;</span>
+</span></span></code></pre></div><p>AggForeignKey用来指定事实表和聚合表对应的列名<br>AggMeasure中name为度量，column为聚合表中相应的列<br>AggLevel 为维度以及级别</p><h2 id=6-聚合表写好却不识别>6. 聚合表写好却不识别
+<a href=#6-%e8%81%9a%e5%90%88%e8%a1%a8%e5%86%99%e5%a5%bd%e5%8d%b4%e4%b8%8d%e8%af%86%e5%88%ab class=h-anchor aria-hidden=true>#</a></h2><p>日志提示 WARN [mondrian.olap.MondrianProperties] mondrian.properties can&rsquo;t be found under &rsquo;d:\Program Files\Apache Software Foundation\Tomcat 7.0.&rsquo; or classloader （输出日志方法请看上一篇文章）
+这是由于 mondrian.properties为识别，而 mondrian.properties中定义了使用聚合表：</p><pre tabindex=0><code>mondrian.rolap.aggregates.Use=true
+mondrian.rolap.aggregates.Read=true
+</code></pre><p>所以只要把 mondrian.properties复制要Tomcat目录下或者Web-INF\classes下（推荐）</p><h2 id=7-聚合表建好后其他不用具备表的查询不能用了提示mondrian-errortoo-many-errors-6-while-loadingreloading-aggregates>7. 聚合表建好后，其他不用具备表的查询不能用了，提示Mondrian Error:Too many errors, &lsquo;6&rsquo;, while loading/reloading aggregates.
+<a href=#7-%e8%81%9a%e5%90%88%e8%a1%a8%e5%bb%ba%e5%a5%bd%e5%90%8e%e5%85%b6%e4%bb%96%e4%b8%8d%e7%94%a8%e5%85%b7%e5%a4%87%e8%a1%a8%e7%9a%84%e6%9f%a5%e8%af%a2%e4%b8%8d%e8%83%bd%e7%94%a8%e4%ba%86%e6%8f%90%e7%a4%bamondrian-errortoo-many-errors-6-while-loadingreloading-aggregates class=h-anchor aria-hidden=true>#</a></h2><p>这是因为其他查询也自动加载聚合表了，要在下使用AggExclude排除聚合表，如下所示：</p><pre tabindex=0><code> &lt;Table name=&#34;WJ_MZSFB0_201005&#34;&gt;
+  &lt;AggExclude name=&#34;AGG_C_0_WJ_MZSFB0_201005&#34; /&gt;
+  &lt;AggExclude name=&#34;AGG_C_1_WJ_MZSFB0_201005&#34; /&gt;
+  &lt;AggExclude name=&#34;AGG_C_2_WJ_MZSFB0_201005&#34; /&gt;
+  &lt;AggExclude name=&#34;AGG_C_3_WJ_MZSFB0_201005&#34; /&gt;
+  &lt;AggExclude name=&#34;AGG_C_4_WJ_MZSFB0_201005&#34; /&gt;
+  &lt;AggExclude name=&#34;AGG_C_5_WJ_MZSFB0_201005&#34; /&gt;
+ &lt;/Table&gt;
+</code></pre><p>这里要指出的是聚合表的Schema和非聚合表的Schema最好是分开的，也就是不同的xml里面。至于在同一xml里使用不同cube我没试过。</p><h2 id=8-oracle数据导入>8. oracle数据导入
+<a href=#8-oracle%e6%95%b0%e6%8d%ae%e5%af%bc%e5%85%a5 class=h-anchor aria-hidden=true>#</a></h2><p>如果你跟我一样拿到的是一个oracle导出的dmp文件，又准备在mysql中用。那只能先装oracle，将dmp导入到oracle，然后使用这个神器——<a href=http://www.cyqdata.com/dbimport>DBImport_V30</a>将oracle中的数据导入到mysql中。（勾选使用分页就可以无限制数据量，不过会有时间限制，重启电脑即可）</p></div><div class=pagination><div class=pagination__title><span class=pagination__title-h>Read other posts</span><hr></div><div class=pagination__buttons><span class="button previous"><a href=https://www.liaol.net/posts/lazyload-jquery/><span class=button__icon>←</span>
+<span class=button__text>jQuery 异步加载图片</span></a></span>
+<span class="button next"><a href=https://www.liaol.net/posts/log4j-in-mondrian/><span class=button__text>使用log4j在Mondrian中输出日志</span>
+<span class=button__icon>→</span></a></span></div></div><script src=https://giscus.app/client.js data-repo=liaol/liaol.github.io data-repo-id="MDEwOlJlcG9zaXRvcnkyNDI2NTY1OA==" data-category=Announcements data-category-id=DIC_kwDOAXJDus4CbdX8 data-mapping=pathname data-strict=0 data-reactions-enabled=1 data-emit-metadata=0 data-input-position=bottom data-theme=preferred_color_scheme data-lang=zh-CN crossorigin=anonymous async></script></article></div><footer class=footer><div class=footer__inner><a href=/ class=logo style=text-decoration:none><span class=logo__mark><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44"><path fill="none" d="M15 8l14.729 14.382L15 35.367"/></svg></span><span class=logo__text>达则兼济天下</span>
+<span class=logo__cursor></span></a><div class=copyright><span>© 2025 Powered by <a href=https://gohugo.io target=_blank rel=noopener>Hugo</a></span>
+<span><a href=https://github.com/panr/hugo-theme-hello-friend target=_blank>Theme</a> made by <a href=https://github.com/panr target=_blank>panr</a></span></div></div></footer><script type=text/javascript src=/bundle.min.js></script></div></body></html>
