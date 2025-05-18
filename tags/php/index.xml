@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>PHP on 达则兼济天下</title><link>https://www.liaol.net/tags/php/</link><description>Recent content in PHP on 达则兼济天下</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Mon, 20 Aug 2018 00:25:43 +0800</lastBuildDate><atom:link href="https://www.liaol.net/tags/php/index.xml" rel="self" type="application/rss+xml"/><item><title>近期面试经历总结。</title><link>https://www.liaol.net/posts/2018-interview-summary/</link><pubDate>Mon, 20 Aug 2018 00:25:43 +0800</pubDate><guid>https://www.liaol.net/posts/2018-interview-summary/</guid><description>
+&lt;p>经过一波密集面试， 终于拿到心仪的offer， 于这周入职。
+终于下定决心离开厦门，来到了帝都。其实自己都说不清为啥， 就是凭着一腔热血，趁着年轻多见见世面。
+这次远程+现场面试应该有10家，大小公司都有， 感觉除了头条都能拿到offer， 就是钱的区别。
+除了头条面试变态， 其他公司套路差不多，包括滴滴，百度，链家，陌陌等。一些常用技术+简单数据结构/算法。我猜主要看上家公司背景吧，非小公司出来的技术不太差一般都会要。 我刚好属于不会吹的那种， 更好的做法是提前准备好说辞， 包括工作中遇到的哪些挑战， 自己做了哪些牛逼的事。哎，在我看来平时的工作也没啥挑战， 都能轻松完成。 其实仔细想想， 还是平时总结的不够， 时间长了就忘了。换位思考下， 如果说不出遇到的挑战， 面试官可能以为你做的事情比较边缘或简单，甚至怀疑你的技术。 总之就是平时做好总结， 面试时大胆的吹出来。
+这里列出一些知识点，如果掌握了这些基本上除头条外的国内互联网公司都能搞定了。 头条的话感觉需要补充各种计算机基础知识（如操作系统， 网络等）和刷一遍leecode。另外剑指offer一定要过一遍！&lt;/p></description></item><item><title>PHP FTP 'vsf_sysutil_recv_peek no data' 错误的解决办法</title><link>https://www.liaol.net/posts/php-ftp-500-oops-vsf-sysutil-recv-peek-no-data/</link><pubDate>Tue, 25 Jul 2017 23:49:52 +0800</pubDate><guid>https://www.liaol.net/posts/php-ftp-500-oops-vsf-sysutil-recv-peek-no-data/</guid><description>
+&lt;p>代码如下：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-php" data-lang="php">&lt;span style="display:flex;">&lt;span>$ftp &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ftp_connect&lt;/span>($config[&lt;span style="color:#e6db74">&amp;#39;host&amp;#39;&lt;/span>], $config[&lt;span style="color:#e6db74">&amp;#39;port&amp;#39;&lt;/span>], &lt;span style="color:#ae81ff">10&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">ftp_login&lt;/span>($ftp, $config[&lt;span style="color:#e6db74">&amp;#39;user&amp;#39;&lt;/span>], $config[&lt;span style="color:#e6db74">&amp;#39;password&amp;#39;&lt;/span>]);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">ftp_pasv&lt;/span>($ftp, &lt;span style="color:#66d9ef">true&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$dist &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#39;test.txt&amp;#39;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$src &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#39;/tmp/test.txt&amp;#39;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$result &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ftp_put&lt;/span>($ftp, $dist, $src, &lt;span style="color:#a6e22e">FTP_BINARY&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">var_dump&lt;/span>($result);
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>始终上传不上去，$result为false。但是用FileZilla却能正常上传。
+用tcpdump抓包看返回：500 OOPS: vsf_sysutil_recv_peek: no data
+如图：
+&lt;img src="https://ws4.sinaimg.cn/large/006tNc79gy1fhwkh0qc6gj311y0jptcf.jpg" alt="">&lt;/p>
+&lt;p>这是因为被动模式下，FTP SERVER返回了个私有地址（172那个），然后FTP CLIENT无法识别。&lt;/p>
+&lt;p>解决办法有两个：&lt;/p>
+&lt;ol>
+&lt;li>在ftp_pasv前面加上ftp_set_option($ftp, FTP_USEPASVADDRESS, false);
+但是5.6.10版本不支持，需要升级到5.6.30+（没仔细看哪个版本提交的bugfix）&lt;/li>
+&lt;/ol>
+&lt;p>2.如果FTP server是vsftpd, 可在server端设置
+&lt;code>pasv_addr_resolve=YES 被动模式是否用设置好的的地址返回给客户端，如果是NO，则从链接的套接字中自己获取地址，如果为YES，则设置为下面这个地址 pasv_address=202.101.104.126 被动模式下返回的地址,安全需要，隐掉后面两个地址段&lt;/code>&lt;/p>
+&lt;p>参考链接：&lt;/p>
+&lt;ol>
+&lt;li>&lt;a href="https://winscp.net/eng/docs/ftp_modes">https://winscp.net/eng/docs/ftp_modes&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://stackoverflow.com/questions/38982901/php-ftp-passive-ftp-server-behind-nat">https://stackoverflow.com/questions/38982901/php-ftp-passive-ftp-server-behind-nat&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://github.com/php/php-src/pull/1668">https://github.com/php/php-src/pull/1668&lt;/a>&lt;/li>
+&lt;/ol></description></item></channel></rss>

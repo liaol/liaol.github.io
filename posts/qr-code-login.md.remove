@@ -1,0 +1,27 @@
+---
+title: 二维码登录Demo
+tags:
+  - Android
+  - 二维码
+id: 29
+categories: ["code"]
+date: "2014-03-26T14:04:29+08:00"
+---
+
+ 终于把毕设做好了，并且发布到云端。昨晚发布到openshift的PaaS，由于GFW的原因，手机端还得挂代理才能访问，而且各种慢。今晚是了下新浪的SAE，可惜不支持mongoDB。只好选择百度的BAE。哎，真心不喜欢百度的产品，各种难用。SAE我立马就可以创建应用，而在BAE，又是轻应用又是手机应用，找了半天才发现我需要的Web应用。后天管理也各种难用，每次提交都要等几秒。创建的mongo数据库竟然不能改名，看到一大串的id真不爽。而且提供的RockMongo功能简陋至极！罢了，暂用而已，而且我是免费用户，不知可以继续用多久，希望可以用到答辩时。
+<!--more-->
+[![5c5ee3350f81f186e93e2e54ac562d0c](https://static.xmost.top/hexo-qrcode.jpg)](https://static.xmost.top/hexo-qrcode.jpg)
+
+PS:Git真是神器，对比一下，以前用winscp上传代码真是low。有空学习下Git
+
+二维码登录的演示地址为http://guoerqr.duapp.com/QRcodeLogin/webroot/index.php
+
+Android APK：https://www.dropbox.com/s/cick5t42lad0t55/qr-login.apk
+
+username:liao
+
+password:123456
+
+源码等我完善后发布到github
+
+Reference：http://www.jiangkunlun.com/2012/10/%E4%BA%8C%E7%BB%B4%E7%A0%81%E7%99%BB%E5%BD%95_qrcode_zbar/

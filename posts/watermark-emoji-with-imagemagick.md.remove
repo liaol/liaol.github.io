@@ -1,0 +1,23 @@
+---
+title: 使用imagemagick给图片/视频加emoji水印
+categories: ["code"]
+date: "2017-05-21T00:35:43+08:00"
+tags:
+---
+
+项目在Linux服务器上用imagemagick给图片加水印，但是由于Linux机器默认不支持emoji，如果水印的文字中的emoji表情就会变成问号。查了半天，没发现有人解决问题的。（Android,iOS上生成的不算，因为本身就支持emoji）
+首先想到的是安装个emoji字体。确实可行，但是只有灰白的emoji，如https://github.com/eosrei/emojione-color-font。  相关讨论见这里http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=23057
+最后只能使用粗暴的方案：将emoji表情对应的png图片全部下载下来，然后根据字体大小缩放排列后贴到背景图上。没啥技术含量，但是需要耐心调试效果。步骤如下：
+
+一. 下载emoji图片
+[unicode网站](http://www.unicode.org/emoji/charts/full-emoji-list.html)有全部emoji表情图片，全都是base64 encode的图片资源。然后写个脚本获取需要的某个平台的emoji图片。
+
+二. 贴emoji图片
+首先生成一张透明的背景图，假设水印文字为“你😀好🇨🇳”，需要将文字和emoji拆开。先生成“你“的水印图片，贴到背景图，假设文字宽度为W，找到"😀"对应的图片，缩放成W*W（具体看效果微调），贴到背景图，注意这时贴的起始位置应该是W(同样需要微调)，因为前面已经有"你"了。依次类推，继续贴上后面的水印图片。
+如果是要给视频加水印，可先生成水印图片，然后用ffmpeg贴到视频上。
+
+脚本可参考[gist](https://gist.github.com/liaol/a1f7359af673731ec8c6c2d33d7c4fbe)
+
+** 如果您有更好的办法请留言 **
+
+

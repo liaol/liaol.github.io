@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on 达则兼济天下</title><link>https://www.liaol.net/posts/</link><description>Recent content in Posts on 达则兼济天下</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sun, 18 May 2025 00:00:47 +0800</lastBuildDate><atom:link href="https://www.liaol.net/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>MCP Server 教程：构建高效的模型上下文管理服务</title><link>https://www.liaol.net/posts/how_to_make_mcp_server/</link><pubDate>Sun, 18 May 2025 00:00:47 +0800</pubDate><guid>https://www.liaol.net/posts/how_to_make_mcp_server/</guid><description>
+&lt;p>在构建复杂的AI应用，特别是涉及多轮对话、长期任务或个性化用户体验时，**有效地管理和同步模型的状态或“上下文”**是成功的关键。Model Context Protocol (MCP) 旨在提供一套标准化的方法来处理这一挑战。本教程将深入探讨如何设计和构建一个独立、可伸缩的 MCP Server，以及为什么它对现代AI系统至关重要。&lt;/p></description></item><item><title> Linux 远程复制到 macOS 剪贴板</title><link>https://www.liaol.net/posts/linux-remote-pbcopy/</link><pubDate>Sat, 17 May 2025 00:00:47 +0800</pubDate><guid>https://www.liaol.net/posts/linux-remote-pbcopy/</guid><description>
+还在为如何将 SSH 连接的 Linux 服务器文本高效复制到本地 macOS 剪贴板而烦恼吗？特别是当你在 Linux 端使用了 tmux 终端复用器时，传统的复制粘贴方法是否让你感到效率低下？
+本文将为你提供一个完美的解决方案：利用 OSC 52 (Operating System Command 52) 转义序列，实现从 Linux（包括 tmux 会话）到 macOS 剪贴板的无缝、快速文本复制。
+这篇详尽的 OSC 52 教程将指导你完成所有必要的配置，让你彻底告别繁琐操作，大幅提升远程工作效率。
+传统方法的痛点 # 当你通过 SSH 远程操作 Linux 服务器时，经常需要将服务器上的日志、代码片段、配置文件或命令输出复制到你的 macOS 系统。
+传统方法如：
+鼠标拖拽选择（在终端窗口间可能不稳定） 依赖 X11 forwarding（配置复杂，并非总是可用） 通过临时文件传输（步骤繁琐，浪费时间） 这些方法在面对大量文本或频繁操作时，都显得力不从心。
+OSC 52：打通 Linux 与 macOS 剪贴板的桥梁 # OSC 52 是一种标准的终端控制序列，允许在终端内运行的应用程序与宿主操作系统（在这里是 macOS）的剪贴板进行交互。
+简单来说，Linux 上的应用可以发送一个特殊格式的 OSC 52 序列，你的 macOS 终端模拟器（如 iTerm2）接收到后，就能理解并将其中的数据放入 macOS 的系统剪贴板。
+实现 SSH 远程剪贴板同步的核心要素 # macOS 终端模拟器对 OSC 52 的支持</description></item><item><title>create post from mcp</title><link>https://www.liaol.net/posts/from_mcp/</link><pubDate>Sat, 17 May 2025 00:00:47 +0800</pubDate><guid>https://www.liaol.net/posts/from_mcp/</guid><description>
+It&amp;rsquo;s a post posted from github mcp server</description></item><item><title>使用WIFI控制米家摄像头看家助手</title><link>https://www.liaol.net/posts/use-router-to-control-mijia-camera/</link><pubDate>Fri, 09 May 2025 00:00:47 +0800</pubDate><guid>https://www.liaol.net/posts/use-router-to-control-mijia-camera/</guid><description>
+背景 # 出门遛娃时懒得锁门带钥匙，客厅的米家摄像头云台3有看家助手功能，有人移动时手机会发通知，但是如果一直开启，正常有人在家时也会通知。所以需要人出门时开启，回家时关闭，而且家里有多人。一般情况在家手机都会连WIFI，出门就断开，可以考虑用WIFI 来识别有没有人在家。好像现在新款的路由器有「WIFI 电子围栏」功能，我的没有，但是可以用ARP 命令曲线实现类似功能。
+方案 # 要求：局域网内要有一台长时间运行的小设备，比如树莓派、NAS、玩客云等，路由器本身应该也可以。
+原理：在小设备上每分钟运行arp-scan 命令获取局域网内设备，匹配到特定的MAC地址就表示在家，否则是离家，然后调用HA 接口控制摄像头。
+在小设备上安装 Home Assistant 和 米家插件 和 arp-scan ，教程很多不赘述。
+安装完之后在HA 上就能看到米家摄像头设备，看家助手的开关叫「移动侦测」，如「小米智能摄像机3 云台版 移动侦测 」，复制其「实体标识符」，switch. 开头的就是
+生成HA 的「长期访问令牌」，路径是 左下角用户头像-&amp;gt;安全-&amp;gt;长期访问令牌
+获取家人的手机MAC 地址，类似这种 00:0A:02:0B:03:0C，在路由器后台或手机WIFI设置里都能找到。
+将 「实体标识符」、「长期访问令牌」和「MAC地址」复制到下面Python脚本（AI写的），配置crontab，每分钟运行一次。
+问题 # 运气不好会出现在家门口就连上WIFI，然后开启看家，自己开门后就收到画面变动通知，可以把crontab间隔调大点。</description></item><item><title>2024 Summary</title><link>https://www.liaol.net/posts/2024-summary/</link><pubDate>Wed, 01 Jan 2025 12:34:47 +0800</pubDate><guid>https://www.liaol.net/posts/2024-summary/</guid><description>
+2024 有大事发生，当爹了，喜提大胖儿一枚，累并快乐着，身份转变，责任也更重。
+工作上也收获很多，干了几个大项目，没想到了30岁之后还在持续进步。。。
+生活上，跑步、读书也还在继续，有娃之后就不能出去玩了。
+2025 属于自己的时间越来越少，不展望了。</description></item><item><title>2023-总结</title><link>https://www.liaol.net/posts/2023-summary/</link><pubDate>Mon, 01 Jan 2024 17:12:05 +0800</pubDate><guid>https://www.liaol.net/posts/2023-summary/</guid><description>
+时间过得真快，一年又过去了。
+好像没啥要总结的，又是搬砖的一年。
+工作上卷了一年，技术上收获很多，金钱上并没有。。。
+跑步、看书还在坚持。
+推荐: 《翦商》: 原来考古不是简单地挖宝，每个地点串起来，就是迁徙和传播轨迹；
+《万历十五年》: 不一样的历史观。
+特种兵旅游了几个城市，2024 恐怕没这样的机会了。
+就酱</description></item><item><title>Set GOOS for gopls in Vim/Neovim</title><link>https://www.liaol.net/posts/set-goos-for-gopls-in-neovim/</link><pubDate>Sat, 15 Jul 2023 16:30:21 +0800</pubDate><guid>https://www.liaol.net/posts/set-goos-for-gopls-in-neovim/</guid><description>
+I use Neovim to develop my Go project on macOS, but my project only run on Linux Machines, so I need to use to some Linux specific packages like https://pkg.go.dev/golang.org/x/sys@v0.10.0/unix.
+Here the issue is: I can&amp;rsquo;t jump to the definition of xxx_linux.go files, because the GOOS environment variable is set to &amp;ldquo;darwin&amp;rdquo; on macOS.
+vim.g.GOOS = &amp;quot;linux&amp;quot; can set the GOOS in neovim, but it not works for me, since the GoTest function of vim-go will not function properly.</description></item><item><title>树莓派作为单独的翻墙机器</title><link>https://www.liaol.net/posts/raspberry-as-gfw-fucker/</link><pubDate>Wed, 03 May 2023 22:51:54 +0800</pubDate><guid>https://www.liaol.net/posts/raspberry-as-gfw-fucker/</guid><description>
+&lt;p>之前写过&lt;a href="https://www.liaol.net/2022/04/raspberry-pi-clash/">树莓派 3B 使用 clash 作为透明网关&lt;/a> ，后面由于 3B 只有百兆网口，遂改成直接用刷了老毛子的 Newifi3 运行 clash 。
+这几年一直用免费的 oracle vps 作为梯子，勉强够用，直到最近开通了 YouTube Premium 才觉得不够用，就买了个&lt;a href="https://fuqing.cz/aff.php?aff=3911">机场服务&lt;/a>，速度真是屌，晚高峰4K 无压力。
+这时路由器性能就成了瓶颈，YouTube 速度只有 30 Mbps , 而电脑直接运行 clash 可达到 80 Mbps。又得搬出停灰已久的树莓派了。&lt;/p></description></item><item><title>2022-总结</title><link>https://www.liaol.net/posts/2022-summary/</link><pubDate>Sun, 01 Jan 2023 22:37:05 +0800</pubDate><guid>https://www.liaol.net/posts/2022-summary/</guid><description>
+&lt;p>2022，操蛋的一年终于过去了。&lt;/p>
+&lt;p>新冠三年，终于画上句号。再挣不到钱就不能怪疫情了。&lt;/p></description></item><item><title>记一次忘记 close rows 引发的惨案</title><link>https://www.liaol.net/posts/forget-to-close-rows/</link><pubDate>Sun, 28 Aug 2022 17:07:29 +0800</pubDate><guid>https://www.liaol.net/posts/forget-to-close-rows/</guid><description>
+&lt;p>这周帮业务团队排查一个Go 服务问题，这里记录下。&lt;/p></description></item><item><title>how-to-calculate-the-cpu-usage-in-linux</title><link>https://www.liaol.net/posts/how-to-calculate-the-cpu-usage-in-linux/</link><pubDate>Mon, 30 May 2022 22:59:36 +0800</pubDate><guid>https://www.liaol.net/posts/how-to-calculate-the-cpu-usage-in-linux/</guid><description>
+&lt;p>As we know, one can use top or other tools to get cpu usage。 Below is the output of top&lt;/p>
+&lt;p>&lt;img src="https://www.liaol.net/img/top.jpeg" alt="">&lt;/p>
+&lt;p>Now I will explain how to calculate the CPU usage in Linux.&lt;/p></description></item><item><title>树莓派 3B 使用 clash 作为旁路由网关</title><link>https://www.liaol.net/posts/raspberry-pi-clash/</link><pubDate>Wed, 20 Apr 2022 22:27:18 +0800</pubDate><guid>https://www.liaol.net/posts/raspberry-pi-clash/</guid><description>
+&lt;p>最近发现树莓派涨价了，所以翻出了吃灰很久的树莓派 3B+，作为可以翻墙的旁路由网关，替代性能孱弱的路由器翻墙。这里记录下步骤。&lt;/p>
+&lt;p>&lt;img src="https://www.liaol.net/img/raspberry-3b.jpg" alt="">&lt;/p></description></item><item><title>2021-总结</title><link>https://www.liaol.net/posts/2021-summary/</link><pubDate>Mon, 03 Jan 2022 21:09:08 +0800</pubDate><guid>https://www.liaol.net/posts/2021-summary/</guid><description>
+&lt;p>2021 过得真快，没反应过来就完事了，可能是年纪大了。&lt;/p>
+&lt;p>可恶，还是没有财务自由，睡后收入也没提升一个数量级。&lt;/p></description></item><item><title>2021年北京同仁医院视网膜脱落手术经历</title><link>https://www.liaol.net/posts/2021-tongren-yiyuan-exp/</link><pubDate>Sun, 31 Jan 2021 16:33:26 +0800</pubDate><guid>https://www.liaol.net/posts/2021-tongren-yiyuan-exp/</guid><description>
+&lt;p>父亲高度近视，3个月前左眼看不见了，在家里小医院开药吃，耽误了治疗。元旦来北京同仁医院手术治疗，这里记录下，供其他人参考。&lt;/p></description></item><item><title>2020总结</title><link>https://www.liaol.net/posts/2020-summary/</link><pubDate>Fri, 01 Jan 2021 16:14:51 +0800</pubDate><guid>https://www.liaol.net/posts/2020-summary/</guid><description>
+2020 全球的关键字应该是「疫情」，我的关键字是「搞钱」，「买房」和「换工作」。
+年初在家办公，加入了「生财有术」社群，豁然开朗，眼界大开，终于走上了搞钱的正路上。尝试了很多方向，收益还不错，财富自由有了正确方向。
+年中换工作，做基础架构方向，终于不用跟业务撕逼扯皮了，专心写代码，有了更多时间思考。
+下半年房子摇到了，开始了每月还房贷的生活。下个目标是大平层啦。
+2021 的目标依旧是财务自由。 🤣</description></item><item><title>记一次WordPress 被黑</title><link>https://www.liaol.net/posts/wordpress-attacked/</link><pubDate>Sun, 15 Nov 2020 01:08:59 +0800</pubDate><guid>https://www.liaol.net/posts/wordpress-attacked/</guid><description>
+&lt;p>之前搭的一个WordPress 站点，没想到最近被黑了。情况跟这个&lt;a href="https://wordpress.stackexchange.com/questions/377752/how-to-mass-delete-one-line-from-all-posts-after-site-hack">问题&lt;/a>类似，网站强制跳转到 &lt;a href="https://crow.lowerthenskyactive.ga">https://crow.lowerthenskyactive.ga&lt;/a>&lt;/p>
+&lt;p>幸亏之前有备份代码和数据库，保留现场后迅速从git 恢复代码，导入数据库备份。&lt;/p>
+&lt;p>也算是一次有趣的经历，这里记录下经验。&lt;/p></description></item><item><title>Win10 使用体验和推荐软件与配置</title><link>https://www.liaol.net/posts/win10/</link><pubDate>Sun, 19 Jul 2020 01:43:23 +0800</pubDate><guid>https://www.liaol.net/posts/win10/</guid><description>
+&lt;p>最近入了台联想小新PRO 13 2020 锐龙R7 笔记本。性能非常好。
+装的是Windows 10， 从MacOS 切换过来还真有点不习惯。
+总体上开发效率比MacOS 会低些，使用体验也差些。可是MacBook Pro 又贵性能又差。 嗯，AMD Yes!&lt;/p>
+&lt;p>这里列出我用到的软件和配置，供参考&lt;/p></description></item><item><title>Go 多个goroutinue顺序打印数字</title><link>https://www.liaol.net/posts/goroutinue-print-in-order/</link><pubDate>Sun, 12 Apr 2020 23:21:41 +0800</pubDate><guid>https://www.liaol.net/posts/goroutinue-print-in-order/</guid><description>
+一. 10个goroutinue顺序打印0-9 # 常规的做法是用10个channel来挨个控制，其实可以用原子包实现，相当于加锁
+func printInOrder() { wg := sync.WaitGroup{} var curr int32 for i := int32(0); i &amp;lt; 10; i++ { wg.Add(1) go func(num int32) { defer wg.Done() for { if n := atomic.LoadInt32(&amp;amp;curr); n == num { fmt.Println(num) atomic.AddInt32(&amp;amp;curr, 1) break } time.Sleep(time.Nanosecond) } }(i) } wg.Wait() } 二. 两个goroutinue分别打印奇偶数 # 同上，还是用原子包
+func printMix() { wg := sync.WaitGroup{} var curr int32 wg.Add(2) go func() { defer wg.Done() for curr &amp;lt; 10 { if n := atomic.</description></item><item><title>为了抢口罩，我搞了个验证码识别</title><link>https://www.liaol.net/posts/captcha-breaking/</link><pubDate>Sun, 16 Feb 2020 23:21:41 +0800</pubDate><guid>https://www.liaol.net/posts/captcha-breaking/</guid><description>
+最近疫情严重，口罩成了硬通货，有钱也不一定能买到。本地政府上线了预约购买口罩，需要准时抢。 第一反应就是写个脚本自动抢。抓包看了下接口很简单，只是验证码比较头疼。 验证码长这样：
+首先去github搜索下验证码识别的项目，主要有两种：1.opencv降噪后用tesseract识别；2.用TensorFlow,PyTorch之类的机器学习框架训练模型。 这里有个合集：https://github.com/ZYSzys/awesome-captcha
+先说第一种： 可以看这篇文章，https://www.cnblogs.com/qqandfqr/p/7866650.html 这里的问题是干扰线比较粗，去不干净。最后识别率很低，没法用。
+再看第二种： 思路很简单：拿到大量(万级别)验证码图片并标注，训练之，生成个模型。 问题是怎么拿到大量标注好的验证码图片呢？可以花钱找打码平台识别，但是现在很多打码平台都被封了。 自己生成呢？得跟要识别的验证码图片样式一样才行。 机智如我，看预约口罩的接口是java写的（url里有servlet），做这种政府项目的技术都很一般，生成验证码的代码估计也是复制来的。Google 搜索下&amp;quot;java 验证码&amp;quot;，果然找到一篇教程，里面的验证码样式跟上面一样。 简直天助我也，果断复制代码生成一万个验证码图片，自带标注，美滋滋。 训练完后准确率高达90%。
+最后顺利抢到了口罩。</description></item><item><title>2019总结</title><link>https://www.liaol.net/posts/2019-summary/</link><pubDate>Wed, 01 Jan 2020 17:07:30 +0800</pubDate><guid>https://www.liaol.net/posts/2019-summary/</guid><description>
+2019好像没啥大事。 大概看了十本书，坚持背了大半年英语单词，学了半年流利说，坚持跑步。 陪梦哥买了房，我自己还没买，惭愧。 工作波澜不惊，或者说不太开心。 北京太冷了，怀念南方。 美股全出了，今年收益率虽然说有60%，但也错过了很多机会，总体是亏的。只能说不炒股是最赚的。没有如果。
+还是没有财务自由，目测2020年也不会。 最好是能搞点副业，来个睡后收入。
+加油吧。</description></item><item><title>使用TensorFlow快速实现自己的图片分类器</title><link>https://www.liaol.net/posts/tensorflow-image-classifier/</link><pubDate>Sat, 23 Mar 2019 23:46:03 +0800</pubDate><guid>https://www.liaol.net/posts/tensorflow-image-classifier/</guid><description>
+这篇教程是利用现成的TensorFlow轮子快速实现一个图片分类器。 先说下背景：最新在做一个有趣的网站：meizigif.com 主要是抓取微博上好看的小姐姐图片贴到网站上。但是我又懒得一张张筛选，因为小姐姐们有时会发抠脚大汉的图。这时就需要一个”鉴黄“服务：检查图片是否sexy。 最开始用的是这个open_nsfw , 效果不好。 还是得用自己的图片集训练。 具体做法如下： GitHub上找到一个现成的轮子sourcedexter/tfClassifier。 照着这个教程操作即可。 有几个注意点：
+至少要有两个分类， 我这个case是用sexy和not sexy 两类 这种错误是因为图片有问题，直接删掉即可。文件名就在错误提示前一行 Fail to slurp xxx file, reason: Failed to read from given file 这个错误是因为TensorFlow 版本不同， 把retrain.py中的SummaryWriter改成tf.summary.FileWriter即可 AttributeError: module &amp;#39;tensorflow.python.training.training&amp;#39; has no attribute &amp;#39;SummaryWriter&amp;#39; 验证效果 python3 retrain_model_classifier.py xxx.jpg 这时如果提示找不到output.pb，是因为教程中的命令生成的是output文件， 需要重命名成output.pb。默认的labels.txt在/tmp/下面， 需要mv过来。
+以上 简单用没啥技术含量，但迅速解决了我的需求。</description></item><item><title>北京大学口腔医院种植牙记录</title><link>https://www.liaol.net/posts/dental-implant-in-beijing/</link><pubDate>Sun, 27 Jan 2019 21:05:05 +0800</pubDate><guid>https://www.liaol.net/posts/dental-implant-in-beijing/</guid><description>
+这篇记录在北京大学口腔医院种牙经历， 供参考。
+2018年3月 # 拔牙。我是在其他医院拔的牙，走的医保。 在北大口腔种牙全部都是自费的。
+2018年11月19日 # 在北京大学口腔医院APP上预约了种植科一个副主任医师的号， 拍片，确认能种，预约手术时间。这家医院非常火爆， 要等一两个月才能安排上。 花费如下：
+项目 花费 挂号 60 拍片 240 合计 300 2019年01月08日 # 手术前去抽血化验。 花费：398
+2019年01月22日 # 手术，种牙根（Nobel Active 种植体）。 手术前需要带消炎药，止痛药，漱口水，可自带也可以在医院买， 这些在预约手术时有个单子会写清楚。 手术很快， 全程大概15分钟， 打完麻药就没啥感觉了， 躺在牙椅上任人宰割。 花费如下：
+项目 花费 挂号 60 消炎药，止痛药，漱口水 80 缴费（50%） 7800 合计 7940 2019年02月22日 # 复查。 没啥问题， 约4月底取摸。
+项目 花费 挂号 60 2019年04月23日 # 取模。过程很简单，最后需要选择牙冠材质，我选的是二氧化锆的
+项目 花费 挂号 50 拍片 30 合计 80 取完摸后，突然想起种植时医生说可能需要补角化龈， 下午约了种植医生做了软组织移植手术。就是把口腔别的部位的粘膜移植到种植体附近的牙龈。因为之前缺牙很久牙龈都萎缩了。这一步并不是每个人都需要。因人而异。
+项目 花费 挂号 60 手术费 1500 合计 1560 约两个月后带牙冠。</description></item><item><title>2018总结</title><link>https://www.liaol.net/posts/2018-summary/</link><pubDate>Tue, 01 Jan 2019 12:11:47 +0800</pubDate><guid>https://www.liaol.net/posts/2018-summary/</guid><description>
+连睡觉都是浪费的2018年也过去了。 这一年发生了太多事。 年初准备买房，幸亏没下手， 不然可能要去拉横幅抗议降价了。继续观望 4月开始看机会， 投了一波区块链公司。也幸亏没去， 不然现在就被裁了 5月底年假去泰国玩了一周， 第一次出国。 6月在v2看到xx的招聘，顺手投了。一路顺利拿到offer 8月入职xx，就这样来了北京。 回过头来看， 8月走得太及时了。9月ex公司就开始裁员，如果没走也没心思干活了，凉凉 8年后，又开始过上了有冬天的生活。 第一次在冰面上走，第一次见暖气。哈哈 对于北京的感受就是真破，城市建设比厦门落后10年吧。
+终于开始写Go了， 同时还得维护Java代码，虽然都是没啥技术含量的CURD。但是业务代码也是可以精益求精的。
+2019年，继续努力。</description></item><item><title>树莓派ssh中文乱码的解决办法</title><link>https://www.liaol.net/posts/respberry-ssh-chinese/</link><pubDate>Sun, 16 Dec 2018 00:54:36 +0800</pubDate><guid>https://www.liaol.net/posts/respberry-ssh-chinese/</guid><description>
+mac ssh登录树莓派， 中文显示乱码。解决办法如下：
+运行raspi-config，出现的设置界面里进入Internationalisation Options，按空格选择zh_CN.UTF-8，zh_CN开头的都可以选上。 vim /etc/profile， 加上export LANG=zh_CN.UTF-8 source /etc/profile 这时应该可以显示中文了。</description></item><item><title>fibos兑换教程</title><link>https://www.liaol.net/posts/how-to-buy-fibos-fo/</link><pubDate>Sat, 01 Sep 2018 11:13:26 +0800</pubDate><guid>https://www.liaol.net/posts/how-to-buy-fibos-fo/</guid><description>
+最近fibos很火， 作为一名韭菜当然不容错过。 下面是从零开始兑换fo教程。 注：兑换FO的话注册EOS账户不是必须的，后面提现可能需要EOS账户，应该也可以直接提到交易所，我还没试。
+兑换FO # 注册fibos账户。开始根据官网教程生成公私钥后， curl注册账户一直失败， 然后只能一小时请求一次（提示The interval is less than one hour）。只好作罢。后来发现https://more.top/ 钱包有这个功能。该钱包内有生成fibos账户的功能。生成账户后保存好公钥，私钥，账户名 到交易所提现EOS到fibos指定账户。memo写上一步中注册到的fibos账户名。第一次可以只提一个eos，避免出问题损失大。提现到账后就可以查询fibos账户了。https://explorer.fibos.rocks/ 可以搜索到账户余额。这是账户中只有EOS。需要下一步兑换。 将账户中EOS兑换成FO。这一步我没用more.top钱包兑换，不知道有没有这个功能。 我是直接用https://github.com/adshao/fibos-scripts 中的脚本。 var res = client.exchangeEOS(&amp;#34;1.0000 FO&amp;#34;); console.log(res); 兑换完后https://explorer.fibos.rocks/ 即可查询到。 注册eos账户 # 注册eos账户需要eos， 也就是需要💰。 我是在https://eos-account-creator.com/ 创建的。
+输出你要注册的账户名 输出公钥。（左边有生成公钥私钥的工具，一定要保存好私钥和公钥） 支付。有三种支付方式：a.虚拟货币（btc,eth等）b.信用卡 c.EOS 我尝试从otcbtc提现到eos-account-creator.com指定的eos账户， 提示说不能提现到合约地址。 只好使用eth转账。 保存好你的私钥，公钥， 账户名 参考 # fibos脚本 https://github.com/adshao/fibos-scripts 查询eos交易 https://explorer.eosvibes.io/ 查询fibos交易 https://explorer.fibos.rocks/</description></item><item><title>近期面试经历总结。</title><link>https://www.liaol.net/posts/2018-interview-summary/</link><pubDate>Mon, 20 Aug 2018 00:25:43 +0800</pubDate><guid>https://www.liaol.net/posts/2018-interview-summary/</guid><description>
+&lt;p>经过一波密集面试， 终于拿到心仪的offer， 于这周入职。
+终于下定决心离开厦门，来到了帝都。其实自己都说不清为啥， 就是凭着一腔热血，趁着年轻多见见世面。
+这次远程+现场面试应该有10家，大小公司都有， 感觉除了头条都能拿到offer， 就是钱的区别。
+除了头条面试变态， 其他公司套路差不多，包括滴滴，百度，链家，陌陌等。一些常用技术+简单数据结构/算法。我猜主要看上家公司背景吧，非小公司出来的技术不太差一般都会要。 我刚好属于不会吹的那种， 更好的做法是提前准备好说辞， 包括工作中遇到的哪些挑战， 自己做了哪些牛逼的事。哎，在我看来平时的工作也没啥挑战， 都能轻松完成。 其实仔细想想， 还是平时总结的不够， 时间长了就忘了。换位思考下， 如果说不出遇到的挑战， 面试官可能以为你做的事情比较边缘或简单，甚至怀疑你的技术。 总之就是平时做好总结， 面试时大胆的吹出来。
+这里列出一些知识点，如果掌握了这些基本上除头条外的国内互联网公司都能搞定了。 头条的话感觉需要补充各种计算机基础知识（如操作系统， 网络等）和刷一遍leecode。另外剑指offer一定要过一遍！&lt;/p></description></item><item><title>2017总结</title><link>https://www.liaol.net/posts/2017-summary/</link><pubDate>Fri, 16 Feb 2018 21:34:18 +0800</pubDate><guid>https://www.liaol.net/posts/2017-summary/</guid><description>
+似乎没什么要总结的，所以拖到今天（大年初一）才写。 2017年是职业生涯加班最多的一年，一共上了315天班，可怕。 2018年的目标就不制定，反正17年的也没完成。😂 就酱。</description></item><item><title>PHP,Java,Go 通用的AES加解密方法</title><link>https://www.liaol.net/posts/aes-by-php-java-golang/</link><pubDate>Fri, 29 Sep 2017 00:51:13 +0800</pubDate><guid>https://www.liaol.net/posts/aes-by-php-java-golang/</guid><description>
+&lt;p>核心思路就是加密时先随机生成16位向量iv,再将iv和密文拼接后base64encode后输出
+解密时前16位是向量iv，剩下是密文。&lt;/p></description></item><item><title>PHP FTP 'vsf_sysutil_recv_peek no data' 错误的解决办法</title><link>https://www.liaol.net/posts/php-ftp-500-oops-vsf-sysutil-recv-peek-no-data/</link><pubDate>Tue, 25 Jul 2017 23:49:52 +0800</pubDate><guid>https://www.liaol.net/posts/php-ftp-500-oops-vsf-sysutil-recv-peek-no-data/</guid><description>
+&lt;p>代码如下：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-php" data-lang="php">&lt;span style="display:flex;">&lt;span>$ftp &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ftp_connect&lt;/span>($config[&lt;span style="color:#e6db74">&amp;#39;host&amp;#39;&lt;/span>], $config[&lt;span style="color:#e6db74">&amp;#39;port&amp;#39;&lt;/span>], &lt;span style="color:#ae81ff">10&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">ftp_login&lt;/span>($ftp, $config[&lt;span style="color:#e6db74">&amp;#39;user&amp;#39;&lt;/span>], $config[&lt;span style="color:#e6db74">&amp;#39;password&amp;#39;&lt;/span>]);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">ftp_pasv&lt;/span>($ftp, &lt;span style="color:#66d9ef">true&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$dist &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#39;test.txt&amp;#39;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$src &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#39;/tmp/test.txt&amp;#39;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$result &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">ftp_put&lt;/span>($ftp, $dist, $src, &lt;span style="color:#a6e22e">FTP_BINARY&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">var_dump&lt;/span>($result);
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>始终上传不上去，$result为false。但是用FileZilla却能正常上传。
+用tcpdump抓包看返回：500 OOPS: vsf_sysutil_recv_peek: no data
+如图：
+&lt;img src="https://ws4.sinaimg.cn/large/006tNc79gy1fhwkh0qc6gj311y0jptcf.jpg" alt="">&lt;/p>
+&lt;p>这是因为被动模式下，FTP SERVER返回了个私有地址（172那个），然后FTP CLIENT无法识别。&lt;/p>
+&lt;p>解决办法有两个：&lt;/p>
+&lt;ol>
+&lt;li>在ftp_pasv前面加上ftp_set_option($ftp, FTP_USEPASVADDRESS, false);
+但是5.6.10版本不支持，需要升级到5.6.30+（没仔细看哪个版本提交的bugfix）&lt;/li>
+&lt;/ol>
+&lt;p>2.如果FTP server是vsftpd, 可在server端设置
+&lt;code>pasv_addr_resolve=YES 被动模式是否用设置好的的地址返回给客户端，如果是NO，则从链接的套接字中自己获取地址，如果为YES，则设置为下面这个地址 pasv_address=202.101.104.126 被动模式下返回的地址,安全需要，隐掉后面两个地址段&lt;/code>&lt;/p>
+&lt;p>参考链接：&lt;/p>
+&lt;ol>
+&lt;li>&lt;a href="https://winscp.net/eng/docs/ftp_modes">https://winscp.net/eng/docs/ftp_modes&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://stackoverflow.com/questions/38982901/php-ftp-passive-ftp-server-behind-nat">https://stackoverflow.com/questions/38982901/php-ftp-passive-ftp-server-behind-nat&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://github.com/php/php-src/pull/1668">https://github.com/php/php-src/pull/1668&lt;/a>&lt;/li>
+&lt;/ol></description></item><item><title>好物清单</title><link>https://www.liaol.net/posts/great-things-list/</link><pubDate>Tue, 18 Jul 2017 00:21:58 +0800</pubDate><guid>https://www.liaol.net/posts/great-things-list/</guid><description>
+蓝牙适配器
+Linux免驱，价格便宜。在Deepin上测试可用。
+链接：https://item.jd.com/3780491.html</description></item><item><title>在不支持Google Play Service(GMS)的Android手机上使用Google Photos</title><link>https://www.liaol.net/posts/android-use-google-photos-without-google-play-service/</link><pubDate>Tue, 18 Jul 2017 00:16:45 +0800</pubDate><guid>https://www.liaol.net/posts/android-use-google-photos-without-google-play-service/</guid><description>
+最近换了一部没法安装Google Play Service(GMS)的Android手机，下载Google Photos只能当本地相册使用，没有同步相册功能。只能换成用Dropbox同步。 今天突然想到一个好办法：IFTTT。 下载IFTTT Android版，连接Google Photos Channel，用这个Applet即可。简直完美。</description></item><item><title>工银亚洲香港开户见证教程</title><link>https://www.liaol.net/posts/icbc-hk-2017/</link><pubDate>Sun, 14 May 2017 01:15:06 +0800</pubDate><guid>https://www.liaol.net/posts/icbc-hk-2017/</guid><description>
+终于成功开通了工银亚洲香港的综合账户。现将开户流程列出来，仅供参考。 以下只在2017年于厦门思明支行验证通过。其他地区或日期如有差异，概不负责！！！
+材料 # 港澳通行证且有有效期三个月以上的香港签注。注意是有效期，不是停留时间。普通的一年一次，停留7天的那种就行。 如果住宅地址不是身份证上的地址，则需要地址证明材料（如纸质信用卡账单，招行可以叫客服发有盖章的账单到邮箱然后自己打印。） 身份证。 申请表。下文会说。 内地的工行卡。交见证开户的手续费(50rmb)和后面激活账号都要用。 办理流程 # 先看这里 在线申请并打印两份导出的申请表。
+几点注意： 永久地址一定要填身份证上的地址 住宅地址如果不是身份证上的地址，那一定要跟地址证明材料上的一样。 通讯地址是用来收银行卡的地址。可以填其他的地址且不需要地址证明材料。 预约网点。在1中列出的工银亚洲开户见证业务受理网点 中选择你要去的网点（建议选大型的分行），查到网点的预约电话。（如厦门市思明分行的预约电话是2094132)。 到了预约的日期，带上上面列的材料去银行办理。(厦门市思明分行的流程是先去理财室找理财经理打印材料，然后去1号窗口办理，共需要一个多小时。办理成功的话，柜台MM会给你三个密码信封和一个密码器。) 等确认电话。一般7天左右工行95588会给你打电话核实一些信息。核实完的第二天就会收到开通成功的短信和密码器的激活码。 用内地的工行卡往香港卡的港元储蓄账户(账号在第3步给你的单据上)汇至少60港币以激活账户。（因为工银亚洲会收60港币的落地费）具体怎么汇款自己搜索下。 这时已经可以正常使用香港账户网银了。然后10天左右会收到寄来的银行卡。</description></item><item><title>踩了一个mysql隐式转换的坑</title><link>https://www.liaol.net/posts/mysql-implicit-type-conversion/</link><pubDate>Sun, 09 Apr 2017 23:51:54 +0800</pubDate><guid>https://www.liaol.net/posts/mysql-implicit-type-conversion/</guid><description>
+前几天线上发生了一个故障，大批用户反馈自己的数据异常。收到反馈后发现是用户缓存中的一个字段A混入了脏数据。 背景：用户信息是从mysql取，然后存到缓存中。后来加了一个业务：从redis取出另一个数据A，一起存入用户缓存中， 临时将数据异常的缓存清空，然后开始找原因。开始一直以为是redis波动导致取数据A失败，导致A出现脏数据。但是日志中又没有找到当时的redis报错信息。 最后实在没办法，就在设置缓存的方法里记个debug日志，如果待存入缓存的数据中A字段异常，就把调用栈记下来。果然就找到原因了。 根据uid获取用户信息时，如果uid传了是123a，缓存中自然没有123a这个key，穿透到mysql，而mysql由于隐式转换会搜索出id=123的记录，然后redis也没有123a这个key，所以A为空，最后id=123的用户信息和空的A一起存入了id=123用户缓存中。真是坑爹。解决办法就是在获取用户信息的方法前加个强制类型缓存（intval），将123a转换为123。
+参考资料：https://yq.aliyun.com/articles/39477</description></item><item><title>美股经验总结</title><link>https://www.liaol.net/posts/us-stocks-experience/</link><pubDate>Tue, 21 Feb 2017 23:14:10 +0800</pubDate><guid>https://www.liaol.net/posts/us-stocks-experience/</guid><description>
+玩美股/港股也有快半年了，记录点经验供人参考。
+开户 # 开户很简单，选择很多。比如：国外的有盈透证券(IB)，firsttrade，国内的有富途证券，老虎证券。由于富途需要线下见证，所以选择了更简单的老虎证券，上传身份证照片搞定。一般一周审核通过。首次入金需要3000刀才能交易，佣金最低2.99刀，反正交易不频繁也可以接受。高阶的可以用IB（老虎其实也是走的IB的通道）。
+入金 # 美股最麻烦的就是入金了，有点门槛，其实也不复杂。 简单说就是选择一个网银购汇，然后境外汇款就行了。 2017年后国家收紧了外汇政策，不允许购汇用于投资。我是2016年入金的，但身边有朋友2017年通过相同渠道成功入金。 银行选择。如果有香港银行卡则更好。如招行香港，工银亚洲，这两个都可以在大陆办理，但是都有门槛。招行香港需要在招行连续资产超过5w人民币(涨到500w了)，工银亚洲官网说只要证件齐全就行，但是厦门的工行要求有逗留时间超过三个月的港澳通行证（一般旅行签只有7天）工银亚洲开户教程。这两张卡我都没有。我是通过建行网银入金的，3000刀电报费80+手续费20，但是奇怪的是一个月这100块又退给我了，连续两次都是。另外之前看网上教程说光大阳光出国卡免电报费，就去办了张，结果死活汇不成功，去柜台问，解释说老虎的入金账号在他们的监控名单内。
+交易 # 就是买买买。 说来惭愧，被网易套了几个月，之前270高点没卖，不过财报后295出了，哈哈。 还是选个好的标的长期放着最省事。
+出金 # 入金不易，所以暂时没出金。 2019.12月出金成功。 老虎股票APP上操作，出金到自己的工银亚洲账户，再通过工银速汇转到内地工行卡。老虎到工银亚洲要小几十刀的手续费，工银速汇转账免费。注意转到内地卡时一次不要超过5千刀，不然内地工行网点会打电话让你去现场解释签字。我后来换成一次转4千多，第二天就到账，很顺利。
+港股 # 老虎也可以交易港股。但是有个坑点，买完港股后会产生港币借款，需要在账户-港币现金里进行货币转换，不然会扣借款利息。
+重点 # 来一发推荐链接：https://www.itiger.com/accounts?invite=QXVBC 股市有风险，投资需谨慎。</description></item><item><title>2016总结</title><link>https://www.liaol.net/posts/2016-summary/</link><pubDate>Sun, 08 Jan 2017 00:07:25 +0800</pubDate><guid>https://www.liaol.net/posts/2016-summary/</guid><description>
+再这样下去，以后每年就只剩更新一篇总结了。
+2016年发生了很多事。 年初躁动了一波，看了一些机会，差点就去B站写Go了，哈哈，原来魔都待遇并没有想象中的高。有得也有失吧。
+山中无老虎，猴子称霸王。组内某核心开发离职后，我近乎顶替了他的角色，成为所谓的核心开发，工作量倍增，还算得心应手，也越来越享受这种工作节奏。
+haiyoumi.com 总算是初步上线了(还有很多坑没填)。初试vuejs，体验不错。go+vuejs，大大提高了开发效率。争取每年都学一门新技术。
+今年看的大多是小说，一下还列举不出来。《人类简史》很棒。
+这里列一下2017年小目标，坐等2018年来打脸。
+刷一遍leetcode 撸个Github star manager的网站 学C/C++ 看一个开源项目源码</description></item><item><title>从SAE迁移到DaoCloud</title><link>https://www.liaol.net/posts/migrate-from-sae-to-daocloud/</link><pubDate>Mon, 02 May 2016 20:40:04 +0800</pubDate><guid>https://www.liaol.net/posts/migrate-from-sae-to-daocloud/</guid><description>
+&lt;p>&lt;img src="http://blog.daocloud.io/wp-content/uploads/2016/03/DaoCloud-logo_square-250x250.gif" alt="">&lt;/p>
+&lt;p>原以为SAE一万的豆子可以用很久，结果最近变相收费，云豆耗光，只好撤离。 &lt;br>
+话说最近两年国内新出了好多开发者服务提供商:Coding,DaoCloud,LeanCloud等，造福广大开发者，真是大赞。所以这次就选择了DaoCloud（每个月有免费额度），顺便实践把Daocker。&lt;/p></description></item><item><title>beego项目部署脚本</title><link>https://www.liaol.net/posts/beego-deploy-script/</link><pubDate>Wed, 20 Jan 2016 23:10:34 +0800</pubDate><guid>https://www.liaol.net/posts/beego-deploy-script/</guid><description>
+&lt;p>　　准备上线用&lt;a href="http:beego.me">beego&lt;/a>写的一个小项目，在&lt;a href="https://www.vultr.com/freetrial">vultr&lt;/a>开了个日本节点，注册送50刀，免费用两个月，哈哈。&lt;br>
+　　之前还真没部署过编译型语言项目（Java白学了），也没去折腾&lt;a href="http://capistranorb.com/">capistrano&lt;/a>了。参考beego的文档撸了个简单脚本，先凑合用吧。&lt;br>
+　　&lt;/p></description></item><item><title>2015总结</title><link>https://www.liaol.net/posts/2015-summary/</link><pubDate>Sun, 17 Jan 2016 18:44:14 +0800</pubDate><guid>https://www.liaol.net/posts/2015-summary/</guid><description>
+&lt;p>2015年竟然都过去了！！！无感的一年&lt;/p>
+&lt;p>细数下就跳槽这件大事。离开之前那个超赞的团队去了美图，觉得挺愧疚的，之前的老板，同事都很nice，但是职场大概就是这样残酷吧。俗话说，傍上大树好乘凉，果然大厂福利很棒，但是氛围感觉一般，混口饭吃而已。&lt;/p></description></item><item><title>一生何求</title><link>https://www.liaol.net/posts/yishengheqiu/</link><pubDate>Sat, 10 Oct 2015 00:09:50 +0800</pubDate><guid>https://www.liaol.net/posts/yishengheqiu/</guid><description>
+&lt;p> 今天听到陈百强的一生何求， 突然就想到翻唱过这首歌的苏妙玲， 查了下才记起她时11年的快女，都快忘了她。然后开始感慨时间飞逝。四年前曾经喜欢过她，哈哈。想起看快男快女的青葱岁月，如今忙碌生活，早已无心关注这些。&lt;/p></description></item><item><title>利用github webhook自动更新hexo</title><link>https://www.liaol.net/posts/use-github-webhooks-to-deploy-hexo/</link><pubDate>Thu, 25 Jun 2015 09:45:40 +0800</pubDate><guid>https://www.liaol.net/posts/use-github-webhooks-to-deploy-hexo/</guid><description>
+&lt;p>每次写完东西，还得用Hexo发布，换个环境还得重新搭建hexo,太不优雅。所以就用github webhooks来自动发布。&lt;/p></description></item><item><title>金门落地签一日游小记</title><link>https://www.liaol.net/posts/one-day-in-jinmen/</link><pubDate>Mon, 09 Feb 2015 22:29:34 +0800</pubDate><guid>https://www.liaol.net/posts/one-day-in-jinmen/</guid><description>
+&lt;p>办好通行证就准备去金门玩,刚好是落地签也省得办入金证,趁着周末就去了.记在这里留个纪念.&lt;/p></description></item><item><title>2014总结</title><link>https://www.liaol.net/posts/2014-summary/</link><pubDate>Mon, 19 Jan 2015 00:34:14 +0800</pubDate><guid>https://www.liaol.net/posts/2014-summary/</guid><description>
+&lt;p>新年看来要写个年终总结,可是这1月都快过完了,该死的拖延症.先挖个坑.
+2014注定是个不平凡的一年。毕业，工作，世界杯（其实也没怎么看）.&lt;/p></description></item><item><title>(译)在laravel 4 中使用配置</title><link>https://www.liaol.net/posts/laravel-config/</link><pubDate>Sat, 11 Oct 2014 01:07:35 +0800</pubDate><guid>https://www.liaol.net/posts/laravel-config/</guid><description>
+&lt;p>原文地址:&lt;a href="http://culttt.com/2014/04/07/working-configuration-laravel-4/">http://culttt.com/2014/04/07/working-configuration-laravel-4/&lt;/a>
+&lt;strong>第一次翻译，难免粗糙，欢迎指正！&lt;/strong>&lt;/p>
+&lt;p>配置设置是在各种web应用中我们不得不处理的事。主流得web应用至少要配置数据库,但是通常要配置大量得第三方服务&lt;br>
+我觉得如果你研究过不同得框架，你会发现不同web应用用各自不同的方法管理配置信息。我接触的开发者也经常用他们自己的方法管理配置。&lt;br>
+在这周得教程中，我将介绍怎样在Laravel项目中处理配置信息。我以前得一些教程也介绍过如果使用配置，但我觉得这是个大家都需要的问题，所以值得再写篇文章。&lt;/p></description></item><item><title>将博客从Wordpress迁移到Hexo</title><link>https://www.liaol.net/posts/move-to-hexo/</link><pubDate>Mon, 29 Sep 2014 00:20:33 +0800</pubDate><guid>https://www.liaol.net/posts/move-to-hexo/</guid><description>
+&lt;p>厌倦了Wordpress的臃肿和垃圾评论，还有对Markdown支持不好。遂迁移到最近很流行的&lt;a href="http://hexo.io/">Hexo&lt;/a>静态博客上。&lt;br>
+过程不表，照着文档来就行了。记下几个Tips&lt;/p></description></item><item><title>jQuery 异步加载图片</title><link>https://www.liaol.net/posts/lazyload-jquery/</link><pubDate>Wed, 02 Jul 2014 05:45:37 +0800</pubDate><guid>https://www.liaol.net/posts/lazyload-jquery/</guid><description>
+如果页面中图过多，加载会很慢，用户体验不好。这时就需要异步加载图片。 原理很简单，先将url存在img标签的data-src中，这时页面就不会加载图片，速度自然会变快。页面加载完后，利用jQuery将data-src中的url加到src中即可。当然也可以设置相应的事件 利用lazy-load这个插件可以更简单的实现!
+Have Fun!</description></item><item><title>mondrian教程</title><link>https://www.liaol.net/posts/mondrian-tutor/</link><pubDate>Fri, 23 May 2014 14:04:27 +0800</pubDate><guid>https://www.liaol.net/posts/mondrian-tutor/</guid><description>
+&lt;p>终于做完mondrian的小项目，先将遇到了一些问题和经验记下来。&lt;/p>
+&lt;h2 id="1-支持中文">
+1. 支持中文
+&lt;a href="#1-%e6%94%af%e6%8c%81%e4%b8%ad%e6%96%87" class="h-anchor" aria-hidden="true">#&lt;/a>
+&lt;/h2>
+&lt;p>在web.xml中添加过滤如下：&lt;/p></description></item><item><title>使用log4j在Mondrian中输出日志</title><link>https://www.liaol.net/posts/log4j-in-mondrian/</link><pubDate>Mon, 12 May 2014 17:00:58 +0800</pubDate><guid>https://www.liaol.net/posts/log4j-in-mondrian/</guid><description>
+&lt;p>最近在帮女朋友做毕设，一个基于Mondrian的小项目。写完聚合表后竟然查询速度还是很慢，遂决定打印出日志追踪sql以查看是否真用到了聚合表。
+Mondrian是带有log4j的，只是没有配置。现将配置步骤写下。&lt;/p></description></item><item><title>Google Maps Android API v2配置教程</title><link>https://www.liaol.net/posts/google-maps-android-api-v2/</link><pubDate>Tue, 15 Apr 2014 06:30:58 +0800</pubDate><guid>https://www.liaol.net/posts/google-maps-android-api-v2/</guid><description>
+&lt;p>其实&lt;a href="https://developers.google.com/maps/documentation/android/">官方文档&lt;/a>已经说的很详细了，英文不佳者可能会有点捉急。 注：开发环境Eclipse&lt;/p>
+&lt;p>1.安装和配置Google Play services SDK 在eclipse中打开Android SDK Manager，下载Extras中的Google Play services 右键项目》Properties》Android  点击add按钮添加google-play-service-lib  (不要勾选Is Library)&lt;/p>
+&lt;p>2.在manifest添加 Google Play services version：添加以下代码到Application下&lt;/p>
+&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted --></description></item><item><title>悲欣交集</title><link>https://www.liaol.net/posts/first-post/</link><pubDate>Sun, 23 Mar 2014 11:57:59 +0800</pubDate><guid>https://www.liaol.net/posts/first-post/</guid><description/></item></channel></rss>

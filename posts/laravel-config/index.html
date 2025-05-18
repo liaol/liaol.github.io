@@ -1,0 +1,67 @@
+<!doctype html><html lang=en><head><title>(译)在laravel 4 中使用配置 ::
+达则兼济天下</title><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="原文地址:http://culttt.com/2014/04/07/working-configuration-laravel-4/ 第一次翻译，难免粗糙，欢迎指正！
+配置设置是在各种web应用中我们不得不处理的事。主流得web应用至少要配置数据库,但是通常要配置大量得第三方服务
+我觉得如果你研究过不同得框架，你会发现不同web应用用各自不同的方法管理配置信息。我接触的开发者也经常用他们自己的方法管理配置。
+在这周得教程中，我将介绍怎样在Laravel项目中处理配置信息。我以前得一些教程也介绍过如果使用配置，但我觉得这是个大家都需要的问题，所以值得再写篇文章。
+"><meta name=keywords content><meta name=robots content="noodp"><link rel=canonical href=https://www.liaol.net/posts/laravel-config/><link rel=stylesheet href=/css/style.css><link rel=stylesheet href=https://www.liaol.net/style.css><link rel=apple-touch-icon-precomposed sizes=144x144 href=https://www.liaol.net/img/apple-touch-icon-144-precomposed.png><link rel="shortcut icon" href=https://www.liaol.net/img/favicon.png><link href=/fonts/Inter-Italic.woff2 rel=preload type=font/woff2 as=font crossorigin><link href=/fonts/Inter-Regular.woff2 rel=preload type=font/woff2 as=font crossorigin><link href=/fonts/Inter-Medium.woff2 rel=preload type=font/woff2 as=font crossorigin><link href=/fonts/Inter-MediumItalic.woff2 rel=preload type=font/woff2 as=font crossorigin><link href=/fonts/Inter-Bold.woff2 rel=preload type=font/woff2 as=font crossorigin><link href=/fonts/Inter-BoldItalic.woff2 rel=preload type=font/woff2 as=font crossorigin><meta name=twitter:card content="summary"><meta name=twitter:title content="(译)在laravel 4 中使用配置"><meta name=twitter:description content="原文地址:http://culttt.com/2014/04/07/working-configuration-laravel-4/
+第一次翻译，难免粗糙，欢迎指正！
+配置设置是在各种web应用中我们不得不处理的事。主流得web应用至少要配置数据库,但是通常要配置大量得第三方服务
+我觉得如果你研究过不同得框架，你会发现不同web应用用各自不同的方法管理配置信息。我接触的开发者也经常用他们自己的方法管理配置。
+在这周得教程中，我将介绍怎样在Laravel项目中处理配置信息。我以前得一些教程也介绍过如果使用配置，但我觉得这是个大家都需要的问题，所以值得再写篇文章。"><meta property="og:title" content="(译)在laravel 4 中使用配置"><meta property="og:description" content="原文地址:http://culttt.com/2014/04/07/working-configuration-laravel-4/
+第一次翻译，难免粗糙，欢迎指正！
+配置设置是在各种web应用中我们不得不处理的事。主流得web应用至少要配置数据库,但是通常要配置大量得第三方服务
+我觉得如果你研究过不同得框架，你会发现不同web应用用各自不同的方法管理配置信息。我接触的开发者也经常用他们自己的方法管理配置。
+在这周得教程中，我将介绍怎样在Laravel项目中处理配置信息。我以前得一些教程也介绍过如果使用配置，但我觉得这是个大家都需要的问题，所以值得再写篇文章。"><meta property="og:type" content="article"><meta property="og:url" content="https://www.liaol.net/posts/laravel-config/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2014-10-11T01:07:35+08:00"><meta property="article:modified_time" content="2014-10-11T01:07:35+08:00"><meta property="og:site_name" content="达则兼济天下"><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2453465456861242" crossorigin=anonymous></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-68FSBJF5BP"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-68FSBJF5BP")</script></head><body class=light-theme><div class=container><header class=header><span class=header__inner><a href=/ class=logo style=text-decoration:none><span class=logo__mark><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44"><path fill="none" d="M15 8l14.729 14.382L15 35.367"/></svg></span><span class=logo__text>达则兼济天下</span>
+<span class=logo__cursor></span></a>
+<span class=header__right><nav class=menu><ul class="menu__inner menu__inner--desktop"><li><a href=/about>About</a></li><li><a href=/archive>Archive</a></li></ul><ul class="menu__inner menu__inner--mobile"><li><a href=/about>About</a></li><li><a href=/archive>Archive</a></li></ul></nav><span class=menu-trigger><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></span><span class=theme-toggle><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 41c10.4934.0 19-8.5066 19-19C41 11.5066 32.4934 3 22 3 11.5066 3 3 11.5066 3 22s8.5066 19 19 19zM7 22C7 13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22z"/></svg></span></span></span></header><div class=content><article class=post><h1 class=post-title>(译)在laravel 4 中使用配置</h1><div class=post-meta><time class=post-date>2014-10-11</time></div><span class=post-tags><a href=https://www.liaol.net/tags/laravel/>#laravel</a>&nbsp;</span><div class=post-content><p>原文地址:<a href=http://culttt.com/2014/04/07/working-configuration-laravel-4/>http://culttt.com/2014/04/07/working-configuration-laravel-4/</a>
+<strong>第一次翻译，难免粗糙，欢迎指正！</strong></p><p>配置设置是在各种web应用中我们不得不处理的事。主流得web应用至少要配置数据库,但是通常要配置大量得第三方服务<br>我觉得如果你研究过不同得框架，你会发现不同web应用用各自不同的方法管理配置信息。我接触的开发者也经常用他们自己的方法管理配置。<br>在这周得教程中，我将介绍怎样在Laravel项目中处理配置信息。我以前得一些教程也介绍过如果使用配置，但我觉得这是个大家都需要的问题，所以值得再写篇文章。</p><h2 id=配置文件>配置文件
+<a href=#%e9%85%8d%e7%bd%ae%e6%96%87%e4%bb%b6 class=h-anchor aria-hidden=true>#</a></h2><p>除非你刚接触Laravel，不然你一定已经知道Laravel默认的配置文件在哪。<code>app/config</code>文件夹下有不同单个的配置文件。</p><p>如果你打开其中一个文件，你会发现它仅仅是个简单的数组。这个简单的步骤使得我们创建自己的配置文件变得简单，因为这不难学。</p><p>由于配置文件都是分拆成单个的文件，组织你自己的配置文件也很简单。</p><p>你要注意到有个<code>testing</code>文件夹。你可以创建一个特定的环境文件以覆盖缺省配置。这个在你想在测试时使用内存数据库或者为本地环境配置一些特殊的配置</p><p>阅读一下配置文件看一下你自己的选项。你可能不想更改缺省配置，但是如果你想改它的话很有好处。</p><h2 id=配置你的环境>配置你的环境
+<a href=#%e9%85%8d%e7%bd%ae%e4%bd%a0%e7%9a%84%e7%8e%af%e5%a2%83 class=h-anchor aria-hidden=true>#</a></h2><p>当你第一次开发应用时很容易忽略配置环境。如果你跳过了这一步而直接编码，你可能不会仔细考虑配置两个不同的环境。</p><p>然而一旦你将要叫代码上传到生产服务器时，你需要正确为配置环境。</p><p>Laravel应用中得环境配置在<code>boostrap/start.php</code>。在这个文件中你叫看到下面的代码：</p><pre tabindex=0><code>$env = $app-&gt;detectEnvironment(array(
+ 
+  &#39;local&#39; =&gt; array(&#39;your-machine-name&#39;),
+ 
+));
+</code></pre><p>默认情况下，Laravel应用运行在生产环境中。
+你可以想下面这样定义其他环境：</p><pre tabindex=0><code>$env = $app-&gt;detectEnvironment(array(
+  &#39;local&#39; =&gt; array(&#39;philips-mbp.home&#39;),
+  &#39;staging&#39; =&gt; array(&#39;staging-server&#39;),
+  &#39;production&#39; =&gt; array(&#39;production-server&#39;)
+));
+</code></pre><p><code>philips-mbp.home</code>表示计算机的hostname。运行hostname命令可得到该计算机的hostname</p><p>以前，你可以在Laravel中通过URL参数来设置环境。这不再是个方便得方法，但是你还能通过使用<code>detectEnvironment </code>这个闭包函数来实现这一功能。</p><p>我个人更喜欢通过hostname来设置环境。</p><h2 id=使用config-facade---至今不知道facade什么意思>使用Config facade <code>（至今不知道facade什么意思）</code>
+<a href=#%e4%bd%bf%e7%94%a8config-facade---%e8%87%b3%e4%bb%8a%e4%b8%8d%e7%9f%a5%e9%81%93facade%e4%bb%80%e4%b9%88%e6%84%8f%e6%80%9d class=h-anchor aria-hidden=true>#</a></h2><p>现在你已经正确配置了，你可以开始在代码中使用这些功能。这使得在配置文件中构建任何个性设置变得容易。而在配置文件中构建任何个性设置可以使配置设置不污染你的代码。</p><p>举个例子 假设你已经设置了一个缓存过期时间，你可以像下面那样获取配置：<br><code>$minutes = Config::get('cache.expiry');</code>
+在上面得例子中，cache使文件名，expiry是键名。现在你可以简单使.隔开来选择这个数组中的一个值</p><p>你可以在get传个参数来设置时间：
+<code>$minutes = Config::get('cache.expiry', 10);</code></p><p>你可以使用set方法，但这只在这次请求中有效:
+<code>Config::set('cache.expiry', 10);</code></p><h2 id=在service-providers中使用配置>在service providers中使用配置
+<a href=#%e5%9c%a8service-providers%e4%b8%ad%e4%bd%bf%e7%94%a8%e9%85%8d%e7%bd%ae class=h-anchor aria-hidden=true>#</a></h2><p>我觉得在service providers中是需要使用配置最普遍的场景之一。service providers使一种引导代码和准备服务的方法。</p><p>例如，我想列出缓存的生成时间，我可以这样写repository:</p><pre tabindex=0><code>/**
+ * Register User Repository
+ */
+public function registerUserRepository()
+{
+  $this-&gt;app-&gt;bind(&#39;Cribbb\Repositories\User\UserRepository&#39;, function($app)
+  {
+    $user = new EloquentUserRepository( new User, $app[&#39;hash&#39;] );
+ 
+    $minutes = $app[&#39;config&#39;]-&gt;get(&#39;cache.expires&#39;);
+ 
+    return new CacheDecorator( $user, new LaravelCache( $app[&#39;cache&#39;], &#39;user&#39;, $minutes) );
+  });
+}
+</code></pre><p>在你的 service providers中你可以通过$this->app使用config实例。这跟使用facade是一样的，你可以使用相同的方法来获取和设置配置。</p><h2 id=使用文件>使用.文件
+<a href=#%e4%bd%bf%e7%94%a8%e6%96%87%e4%bb%b6 class=h-anchor aria-hidden=true>#</a></h2><p>Laravel默认的配置文件结构是解决多配置问题的一种很赞的方法。这也使得配置自己的设置并且使用它们变得简单。</p><p>然而当涉及到敏感的设置（比如数据库密码）时，使用这种方法使不明智的。</p><p>例如，你可能不想在git中提交你的数据库信息，你只想在生产环境中使用特定的敏感信息。</p><p>当和很多伙伴同时开发时，这是个很头疼的事情，每个人都有自己的本地数据库，使用不同的用户名和密码。不用git管理本地配置文件也不一定是一种有效的方法。</p><p>哈哈，Laravel提供了一种优雅的解决方法———使用.文件</p><p>一个.文件在羡慕文件夹的根目录，包含任何敏感的或者环境相关的配置详情，这些都不应该提交到项目中。</p><p>你可以为每个环境创建一个.文件,配置信息包含在里面</p><p>例如，在本地工程目录下创建一个<code>.env.local.php</code>的文件。你还要在.gitignore中忽略它以免提交上去。</p><p>在 <code>.env.local.php</code> 中创建一个包含本地敏感配置信息的数组：</p><pre tabindex=0><code>&lt;?php
+return array(
+  &#39;DATABASE_NAME&#39; =&gt; &#39;my_database&#39;,
+  &#39;DATABASE_USER&#39; =&gt; &#39;username&#39;,
+  &#39;DATABASE_PASSWORD&#39; =&gt; &#39;totally_secure_password&#39;
+);
+</code></pre><p>现在，在<code>database.php</code>配置文件中你可以用环境变量来替换写死的信息。</p><pre tabindex=0><code>&#39;database&#39;  =&gt; $_ENV[&#39;DATABASE_NAME&#39;],
+&#39;username&#39;  =&gt; $_ENV[&#39;DATABASE_USER&#39;],
+&#39;password&#39;  =&gt; $_ENV[&#39;DATABASE_PASSWORD&#39;]
+</code></pre><p>在每一个不同的环境（或者一个新伙伴准备在本地搭环境），你都可以创建一个.文件来保存本地的配置信息。这个可以保证本地敏感信息得安全，再也不用为版本控制担心。</p><h2 id=结论>结论
+<a href=#%e7%bb%93%e8%ae%ba class=h-anchor aria-hidden=true>#</a></h2><p>配置管理看上去有很多不同的途径。在生产环境中配置错了数据库或者第三方服务得api key都是我们不愿意看到的。所以要尽早搞定配置。</p><p>Laravel使配置环境易如反掌。我热衷于使用hostname配置环境。当环境不是很明确时，处理不同的环境是很棘手的。</p><p>你最终需要的配置信息多得吃惊。几乎所有的网络应用需要个数据库，大多数还需要很多第三方服务去完成的任务如发邮件，解决bug.在版本控制系统外备份所有的敏感配置信息，然后存储在服务器上，并且依赖他们。这是解决非常不需要的问题的优秀方法。（看不懂）原句是：</p><blockquote><p>Keeping a copy of all of these sensitive configuration details outside of your version control and stored locally on the server that requires them is an excellent solution to a very unnecessary problem.</p></blockquote></div><div class=pagination><div class=pagination__title><span class=pagination__title-h>Read other posts</span><hr></div><div class=pagination__buttons><span class="button previous"><a href=https://www.liaol.net/posts/2014-summary/><span class=button__icon>←</span>
+<span class=button__text>2014总结</span></a></span>
+<span class="button next"><a href=https://www.liaol.net/posts/move-to-hexo/><span class=button__text>将博客从Wordpress迁移到Hexo</span>
+<span class=button__icon>→</span></a></span></div></div><script src=https://giscus.app/client.js data-repo=liaol/liaol.github.io data-repo-id="MDEwOlJlcG9zaXRvcnkyNDI2NTY1OA==" data-category=Announcements data-category-id=DIC_kwDOAXJDus4CbdX8 data-mapping=pathname data-strict=0 data-reactions-enabled=1 data-emit-metadata=0 data-input-position=bottom data-theme=preferred_color_scheme data-lang=zh-CN crossorigin=anonymous async></script></article></div><footer class=footer><div class=footer__inner><a href=/ class=logo style=text-decoration:none><span class=logo__mark><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44"><path fill="none" d="M15 8l14.729 14.382L15 35.367"/></svg></span><span class=logo__text>达则兼济天下</span>
+<span class=logo__cursor></span></a><div class=copyright><span>© 2025 Powered by <a href=https://gohugo.io target=_blank rel=noopener>Hugo</a></span>
+<span><a href=https://github.com/panr/hugo-theme-hello-friend target=_blank>Theme</a> made by <a href=https://github.com/panr target=_blank>panr</a></span></div></div></footer><script type=text/javascript src=/bundle.min.js></script></div></body></html>
